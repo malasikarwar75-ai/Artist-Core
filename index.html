@@ -435,39 +435,22 @@
     <a href="#contact" class="floating-contact">💬 Contact Me</a>
 
     <!-- Script to dynamically load artworks uploaded from the Admin page -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        window.onload = function() {
-            const gallery = document.getElementById('publicGallery');
-            let savedArt = [];
-            
-            try {
-                savedArt = JSON.parse(localStorage.getItem('artCoreGallery') || '[]');
-                if (savedArt.length > 0 && typeof savedArt[0] === 'string') {
-                    savedArt = []; 
-                }
-            } catch (e) { savedArt = []; }
-            
-            if (savedArt.length === 0) {
-                gallery.innerHTML = '<p style="color: var(--text-muted); width: 100%; text-align: center; grid-column: 1 / -1; font-size: 1.2rem;">More artworks coming soon.</p>';
-                return;
-            }
+        const supabaseUrl = 'https://kqcmkwvajvfabaltcbga.supabase.co';
+const supabaseKey = 'Sb_publishable_6KEwJLiy4PcyGUs7uQqONg_Xw58CrHs';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        window.onload = async function() {
+    const gallery = document.getElementById('publicGallery');
+            try
+            const { data: savedArt, error } = await supabase
+        .from('artworks') // Make sure this matches your Supabase table name
+        .select('*');
 
-            // Reverse array so the newest upload appears first
-            savedArt.slice().reverse().forEach(artObj => {
-                const card = document.createElement('div');
-                card.className = 'art-card';
-                
-                card.innerHTML = `
-                    <img src="${artObj.image}" alt="${artObj.title}">
-                    <div class="art-info">
-                        <h3>${artObj.title}</h3>
-                        <p>${artObj.description}</p>
-                    </div>
-                `;
-                
-                gallery.appendChild(card);
-            });
-        };
+    if (error || !savedArt || savedArt.length === 0) {
+        gallery.innerHTML = '<p style="color: var(--text-muted); width: 100%; text-align: center; grid-column: 1 / -1; font-size: 1rem;">No artworks created yet.</p>';
+        return;
+        }
     </script>
 </body>
 </html>
