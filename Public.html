@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ART CORE | Professional Portfolio</title>
+    <h1><font color="#9827FF"><big><big>MALA<big><big></font></h1>
+    <!-- Importing a stylish font for the website name -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Core Styling & Smooth Scroll --- */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --text-main: #f4f4f4;
+            --text-muted: #c0c0c0;
+            --accent: #00e5ff; /* Vibrant Cyan accent */
+            --glass-bg: rgba(10, 10, 20, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            background-color: #030008; 
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- Floating Vibrant Purple & Blue Background --- */
+        .bg-animation {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background-color: #050014;
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(120px);
+            opacity: 0.7;
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+
+        .blob-1 {
+            width: 600px; height: 600px;
+            background: #6a0dad; 
+            top: -10%; left: -10%;
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            width: 700px; height: 700px;
+            background: #0000ff; 
+            bottom: -20%; right: -10%;
+            animation-delay: -5s;
+        }
+
+        .blob-3 {
+            width: 500px; height: 500px;
+            background: #00d2ff; 
+            top: 30%; left: 40%;
+            animation-delay: -10s;
+        }
+        
+        .blob-4 {
+            width: 650px; height: 650px;
+            background: #9400d3; 
+            bottom: 10%; left: 5%;
+            animation-delay: -7s;
+        }
+        
+        .blob-5 {
+            width: 450px; height: 450px;
+            background: #ff00ff; 
+            top: 10%; right: 15%;
+            animation-delay: -12s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(15vw, 15vh) scale(1.2); }
+            66% { transform: translate(-10vw, 20vh) scale(0.9); }
+            100% { transform: translate(5vw, -10vh) scale(1.1); }
+        }
+
+        a {
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--accent);
+        }
+
+        /* --- Header --- */
+        header {
+            text-align: center;
+            padding: 80px 20px 50px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        header h1 {
+            margin: 0;
+            font-family: 'Cinzel', serif;
+            font-size: 5rem;
+            letter-spacing: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #00d2ff, #9400d3, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 4px 20px rgba(148, 0, 211, 0.4);
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            margin-top: 15px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* --- Gallery Grid --- */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .art-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-main);
+            transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .art-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            box-shadow: 0 15px 40px rgba(0, 210, 255, 0.3);
+            background: rgba(20, 20, 35, 0.7);
+        }
+
+        .art-card img {
+            width: 100%;
+            height: 350px; 
+            object-fit: cover;
+            border-bottom: 1px solid var(--glass-border);
+            background-color: rgba(0,0,0,0.5); 
+        }
+
+        .art-info {
+            padding: 25px;
+        }
+
+        .art-info h3 {
+            margin: 0 0 10px 0;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .art-info p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 300;
+        }
+
+        /* --- Pricing Section --- */
+        .pricing-box {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 60px 40px 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            border-top: 4px solid #00d2ff; 
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            margin-bottom: 60px;
+        }
+
+        .pricing-box h2 {
+            margin-top: 0;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-main);
+        }
+
+        .pricing-list {
+            list-style: none;
+            padding: 0;
+            margin: 30px 0 40px 0;
+            font-size: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pricing-list li {
+            margin-bottom: 15px;
+            padding: 15px 25px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .pricing-list li:hover {
+            border-color: var(--accent);
+        }
+
+        .pricing-list span {
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .query-text {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        /* Bouncing Arrow Animation */
+        .down-arrow {
+            display: inline-block;
+            font-size: 2rem;
+            color: #ff00ff; 
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            outline: none;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .down-arrow:hover {
+            color: var(--accent);
+        }
+
+        .down-arrow:active {
+            transform: scale(0.7) translateY(10px);
+            color: #00d2ff;
+            animation: none;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) scale(1); }
+            40% { transform: translateY(-15px) scale(1); }
+            60% { transform: translateY(-7px) scale(1); }
+        }
+
+        /* --- Contact Section --- */
+        .contact-box {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 60px 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            border-top: 4px solid #9400d3; 
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            margin-bottom: 40px;
+        }
+
+        .contact-box h2 {
+            margin-top: 0;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-main);
+        }
+
+        .contact-details {
+            list-style: none; 
+            padding: 0; 
+            margin: 40px 0 0 0; 
+            font-size: 1.1rem;
+        }
+
+        .contact-details li {
+            margin-bottom: 20px; 
+            padding: 15px;
+            background: rgba(0,0,0,0.5); 
+            border-radius: 12px;
+            display: inline-block; 
+            width: 100%; 
+            max-width: 450px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .contact-details li:hover {
+            border-color: var(--accent);
+        }
+
+        .contact-details span { 
+            color: var(--accent); 
+            font-weight: 600; 
+            margin-right: 15px; 
+        }
+
+        /* --- Floating Contact Option --- */
+        .floating-contact {
+            position: fixed; bottom: 30px; right: 30px;
+            background: linear-gradient(45deg, #00d2ff, #9400d3);
+            color: #fff;
+            padding: 15px 30px; border-radius: 50px;
+            font-weight: 600; font-size: 1rem;
+            text-transform: uppercase; letter-spacing: 1.5px;
+            box-shadow: 0 4px 20px rgba(148, 0, 211, 0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            z-index: 1000; display: flex; align-items: center; gap: 8px;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            text-decoration: none;
+        }
+
+        .floating-contact:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 210, 255, 0.8);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 30px;
+            color: var(--text-muted); font-size: 0.9rem;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(15px);
+            border-top: 1px solid var(--glass-border);
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Vibrant Purple & Blue Floating Background -->
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
+        <div class="blob blob-5"></div>
+    </div>
+
+    <header>
+        <h1>ART CORE</h1>
+        <p>Fine Arts & Sketching Portfolio</p>
+    </header>
+
+    <div class="container">
+        
+        <!-- VISITOR GALLERY (Automatically populates uploaded work from Admin page) -->
+        <div class="gallery" id="publicGallery">
+            <!-- JavaScript will insert the art cards here automatically -->
+        </div>
+
+        <!-- PRICING SECTION -->
+        <div id="pricing" class="pricing-box">
+            <h2>Commissions</h2>
+            <ul class="pricing-list">
+                <li><span>Single person portrait</span> INR 600</li>
+                <li><span>Adding one more person in portrait</span> INR 850</li>
+            </ul>
+            <p class="query-text">For more query please contact us</p>
+            <a href="#contact" class="down-arrow">▼</a>
+        </div>
+
+        <!-- CONTACT SECTION -->
+        <div id="contact" class="contact-box">
+            <h2>Get In Touch</h2>
+            <p>Available for commissions and inquiries. Reach out using the details below:</p>
+            <ul class="contact-details">
+                <li><span>Phone:</span> <a href="tel:9306882926">+91 9306882926</a></li>
+                <li><span>Email 2:</span> <a href="mailto:malasikarwar75@gmail.com">malasikarwar75@gmail.com</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <footer>&copy; 2026 ART CORE. All rights reserved.</footer>
+
+    <a href="#contact" class="floating-contact">💬 Contact Me</a>
+
+    <!-- Script to dynamically load artworks uploaded from the Admin page -->
+    <script>
+        window.onload = function() {
+            const gallery = document.getElementById('publicGallery');
+            let savedArt = [];
+            
+            try {
+                savedArt = JSON.parse(localStorage.getItem('artCoreGallery') || '[]');
+                if (savedArt.length > 0 && typeof savedArt[0] === 'string') {
+                    savedArt = []; 
+                }
+            } catch (e) { savedArt = []; }
+            
+            if (savedArt.length === 0) {
+                gallery.innerHTML = '<p style="color: var(--text-muted); width: 100%; text-align: center; grid-column: 1 / -1; font-size: 1.2rem;">More artworks coming soon.</p>';
+                return;
+            }
+
+            // Reverse array so the newest upload appears first
+            savedArt.slice().reverse().forEach(artObj => {
+                const card = document.createElement('div');
+                card.className = 'art-card';
+                
+                card.innerHTML = `
+                    <img src="${artObj.image}" alt="${artObj.title}">
+                    <div class="art-info">
+                        <h3>${artObj.title}</h3>
+                        <p>${artObj.description}</p>
+                    </div>
+                `;
+                
+                gallery.appendChild(card);
+            });
+        };
+    </script>
+</body>
+</html>

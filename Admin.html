@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Core - Open Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0d0d12; color: #e0e0e0; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        header { background: linear-gradient(90deg, #1a1a2e 0%, #16213e 100%); width: 100%; padding: 30px 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; }
+        h1 { color: #4facfe; margin: 0; font-size: 2.5rem; letter-spacing: 3px; text-transform: uppercase; }
+        .contact-info { color: #a8b2d1; font-size: 1.1rem; margin-top: 10px; }
+        .email-highlight { color: #00f2fe; font-weight: bold; }
+        
+        .content-wrapper { max-width: 900px; width: 90%; margin: 40px auto; text-align: center; }
+        .welcome-card { background-color: #1c1c28; padding: 40px; border-radius: 12px; border: 1px solid #2d2d3f; margin-bottom: 30px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .welcome-card h2 { color: #ffffff; margin-top: 0; letter-spacing: 1px; }
+        .welcome-card p { color: #8892b0; line-height: 1.6; font-size: 1.1rem; }
+
+        .upload-section { margin-bottom: 40px; }
+        #fileInput { display: none; }
+        .upload-btn { background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%); color: #0d0d12; border: none; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; border-radius: 8px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .upload-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4); }
+
+        h3 { color: #e0e0e0; font-size: 1.5rem; margin-top: 40px; margin-bottom: 20px; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        
+        .gallery-item { background-color: #1c1c28; border-radius: 8px; overflow: hidden; border: 1px solid #2d2d3f; text-align: left; display: flex; flex-direction: column; position: relative; }
+        .gallery-item img { width: 100%; height: 220px; object-fit: cover; border-bottom: 1px solid #2d2d3f; }
+        .art-details { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+        .art-details h4 { margin: 0 0 8px 0; color: #ffffff; font-size: 1.2rem; }
+        .art-details p { margin: 0 0 15px 0; color: #8892b0; font-size: 0.95rem; line-height: 1.4; flex-grow: 1; }
+        
+        /* Delete Button Style */
+        .delete-btn { background-color: #ff4757; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; width: 100%; }
+        .delete-btn:hover { background-color: #ff6b81; }
+
+        .empty-text { color: #8892b0; font-style: italic; text-align: center; grid-column: 1 / -1; padding: 40px; }
+
+        /* The Popup Menu (Modal) */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background-color: #1c1c28; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; border: 1px solid #4facfe; box-shadow: 0 10px 30px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 15px; }
+        .modal-content h3 { margin: 0; color: #4facfe; text-align: center; }
+        #previewImage { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid #2d2d3f; display: none; }
+        
+        .modal-content input, .modal-content textarea { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #2d2d3f; background-color: #0d0d12; color: #fff; font-size: 1rem; box-sizing: border-box; font-family: inherit; }
+        .modal-content textarea { resize: vertical; min-height: 90px; }
+        .modal-content input::placeholder, .modal-content textarea::placeholder { color: #5a6482; }
+        
+        .modal-buttons { display: flex; gap: 10px; margin-top: 5px; }
+        .modal-buttons button { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: background 0.2s; }
+        .cancel-btn { background-color: #2d2d3f; color: #e0e0e0; }
+        .cancel-btn:hover { background-color: #3f3f5a; }
+        .save-btn { background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%); color: #0d0d12; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Art Core</h1>
+        <div class="contact-info">Admin: <span class="email-highlight">malasikarwar75@gmail.com</span></div>
+    </header>
+
+    <div class="content-wrapper">
+        <a href="Public.html" style="color: #00f2fe; text-decoration: none; font-size: 1.1rem; display: block; margin-bottom: 25px; font-weight: bold;">➔ View Public Portfolio</a>
+
+        <div class="welcome-card">
+            <h2>Dashboard</h2>
+            <p>Upload your sketches, add titles, descriptions, or manage your existing gallery items.</p>
+        </div>
+
+        <div class="upload-section">
+            <input type="file" id="fileInput" accept="image/*">
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">+ Upload Artwork</button>
+        </div>
+
+        <h3>Your Gallery</h3>
+        <div class="gallery-grid" id="galleryGrid">
+            <div id="placeholder" class="empty-text">No artworks uploaded yet.</div>
+        </div>
+    </div>
+
+    <!-- The Popup Menu -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal-content">
+            <h3>Artwork Details</h3>
+            <img id="previewImage" src="" alt="Preview">
+            <input type="text" id="artTitle" placeholder="Artwork Name (e.g., Charcoal Portrait)">
+            <textarea id="artDescription" placeholder="Add a description, technique used, or inspiration..."></textarea>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+                <button class="save-btn" onclick="saveArtwork()">Save Artwork</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const galleryGrid = document.getElementById('galleryGrid');
+        const placeholder = document.getElementById('placeholder');
+        
+        const modal = document.getElementById('uploadModal');
+        const previewImage = document.getElementById('previewImage');
+        const artTitleInput = document.getElementById('artTitle');
+        const artDescriptionInput = document.getElementById('artDescription');
+        
+        let temporaryImageData = "";
+
+        window.onload = function() {
+            loadGallery();
+        };
+
+        function loadGallery() {
+            let savedArt = [];
+            try {
+                savedArt = JSON.parse(localStorage.getItem('artCoreGallery') || '[]');
+                if (savedArt.length > 0 && typeof savedArt[0] === 'string') {
+                    savedArt = []; 
+                }
+            } catch (e) { savedArt = []; }
+
+            galleryGrid.innerHTML = '';
+            
+            if (savedArt.length === 0) {
+                galleryGrid.innerHTML = '<div id="placeholder" class="empty-text">No artworks uploaded yet.</div>';
+                return;
+            }
+
+            // Render items from newest to oldest
+            savedArt.slice().reverse().forEach((artObj, index) => {
+                // Calculate original index in the array for deletion reference
+                const originalIndex = savedArt.length - 1 - index;
+                displayArtwork(artObj, originalIndex);
+            });
+        }
+
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    temporaryImageData = e.target.result;
+                    previewImage.src = temporaryImageData;
+                    previewImage.style.display = 'block';
+                    artTitleInput.value = '';
+                    artDescriptionInput.value = '';
+                    modal.style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            }
+            fileInput.value = ''; 
+        });
+
+        function closeModal() {
+            modal.style.display = 'none';
+            temporaryImageData = "";
+        }
+
+        function saveArtwork() {
+            const title = artTitleInput.value.trim() || "Untitled Sketch";
+            const description = artDescriptionInput.value.trim() || "No description provided.";
+            
+            const newArtwork = {
+                image: temporaryImageData,
+                title: title,
+                description: description
+            };
+
+            let savedArt = JSON.parse(localStorage.getItem('artCoreGallery') || '[]');
+            if (savedArt.length > 0 && typeof savedArt[0] === 'string') savedArt = [];
+            
+            savedArt.push(newArtwork);
+            localStorage.setItem('artCoreGallery', JSON.stringify(savedArt));
+
+            closeModal();
+            loadGallery();
+        }
+
+        function deleteArtwork(index) {
+            let savedArt = JSON.parse(localStorage.getItem('artCoreGallery') || '[]');
+            if (index >= 0 && index < savedArt.length) {
+                savedArt.splice(index, 1); // Remove item from array
+                localStorage.setItem('artCoreGallery', JSON.stringify(savedArt));
+                loadGallery(); // Refresh admin view
+            }
+        }
+
+        function displayArtwork(artObj, index) {
+            const card = document.createElement('div');
+            card.className = 'gallery-item';
+            
+            card.innerHTML = `
+                <img src="${artObj.image}" alt="${artObj.title}">
+                <div class="art-details">
+                    <h4>${artObj.title}</h4>
+                    <p>${artObj.description}</p>
+                    <button class="delete-btn" onclick="deleteArtwork(${index})">Delete</button>
+                </div>
+            `;
+            
+            galleryGrid.appendChild(card);
+        }
+    </script>
+</body>
+</html>
