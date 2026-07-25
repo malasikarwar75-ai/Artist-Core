@@ -92,8 +92,12 @@
             </div>
         </div>
     </div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        const supabaseUrl = 'https://kqcmkwvajvfabaltcbga.supabase.co';
+const supabaseKey = 'Sb_publishable_6KEwJLiy4PcyGUs7uQqONg_Xw58CrHs';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        
         const fileInput = document.getElementById('fileInput');
         const galleryGrid = document.getElementById('galleryGrid');
         const placeholder = document.getElementById('placeholder');
@@ -112,9 +116,22 @@
         function loadGallery() {
             let savedArt = [];
             try {
-                savedArt = JSON.parse(localStorage.getItem('artCoreGallery') || '[]');
-                if (savedArt.length > 0 && typeof savedArt[0] === 'string') {
-                    savedArt = []; 
+                const { data, error } = await supabase
+    .from('artworks') // Make sure this matches your Supabase table name
+    .insert([
+        { 
+            title: titleValue, // Replace with your actual title variable
+            description: descriptionValue, // Replace with your actual description variable
+            image: imageValue // Replace with your actual image variable
+        }
+    ]);
+
+if (error) {
+    console.error('Error uploading:', error);
+    alert('Failed to upload artwork.');
+} else {
+    alert('Artwork uploaded successfully!');
+} 
                 }
             } catch (e) { savedArt = []; }
 
