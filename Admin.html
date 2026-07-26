@@ -92,7 +92,6 @@
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const supabaseUrl = 'https://kqcmkwvajvfabaltcbga.supabase.co';
@@ -133,7 +132,6 @@
                     return;
                 }
 
-                // Render items from newest to oldest
                 savedArt.slice().reverse().forEach((artObj) => {
                     displayArtwork(artObj);
                 });
@@ -143,7 +141,9 @@
             }
         }
 
+        // Fixed event listener to prevent unwanted page reloads/resets
         fileInput.addEventListener('change', function(event) {
+            event.preventDefault();
             const file = event.target.files[0];
             
             if (file) {
@@ -158,18 +158,23 @@
                 };
                 reader.readAsDataURL(file);
             }
-            fileInput.value = ''; 
         });
 
         function closeModal() {
             modal.style.display = 'none';
             temporaryImageData = "";
+            fileInput.value = ''; // Reset input so the same file can be selected again if needed
         }
 
         async function saveArtwork() {
             const title = artTitleInput.value.trim() || "Untitled Sketch";
             const description = artDescriptionInput.value.trim() || "No description provided.";
             
+            if (!temporaryImageData) {
+                alert('Please select an image first.');
+                return;
+            }
+
             const newArtwork = {
                 image: temporaryImageData,
                 title: title,
@@ -200,7 +205,7 @@
                 console.error('Error deleting artwork:', error);
                 alert('Failed to delete artwork.');
             } else {
-                loadGallery(); // Refresh admin view
+                loadGallery();
             }
         }
 
@@ -220,5 +225,6 @@
             galleryGrid.appendChild(card);
         }
     </script>
+                
 </body>
 </html>
