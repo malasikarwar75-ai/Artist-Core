@@ -470,6 +470,16 @@
 
     <!-- Firebase SDK Integration -->
     <script type="module">
+        window.addEventListener('DOMContentLoaded', () => {
+    const adminPassword = "YourSecurePassword123"; // Change this to your desired password
+    const enteredPassword = prompt("Enter Admin Password to Access Dashboard:");
+    
+    if (enteredPassword !== adminPassword) {
+        alert("Access Denied! Incorrect password.");
+        window.location.href = "index.html"; // Redirects unauthorized users to your public home page
+        return;
+    }
+});
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
