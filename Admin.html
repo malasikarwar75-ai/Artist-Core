@@ -359,7 +359,7 @@
         .modal-buttons button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: background 0.2s; }
         .cancel-btn { background-color: var(--border-color); color: var(--text-main); }
         .cancel-btn:hover { opacity: 0.8; }
-        .save-btn { background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%); color: #0d0d12; }
+        .save-btn { background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%); color: #0d0d12; cursor: pointer; }
 
         #toastBanner {
             position: fixed;
@@ -383,15 +383,15 @@
         <h1>Art Core</h1>
         <div class="header-subtext">Master Control Dashboard & Archive</div>
         <div class="top-controls">
-            <button class="control-btn" onclick="toggleTheme()">🌓 Theme</button>
-            <button class="control-btn" onclick="exportDataJSON()">📥 Export JSON</button>
+            <button class="control-btn" id="themeToggleBtn">🌓 Theme</button>
+            <button class="control-btn" id="exportJsonBtn">📥 Export JSON</button>
         </div>
     </header>
 
     <div class="content-wrapper">
         <div class="nav-links">
             <a href="index.html" target="_blank">➔ View Public Portfolio</a>
-            <a href="#" onclick="copyPublicLink()">🔗 Copy Portfolio Link</a>
+            <a href="#" id="copyLinkBtn">🔗 Copy Portfolio Link</a>
         </div>
 
         <div class="stats-grid">
@@ -417,7 +417,7 @@
         <div class="action-toolbar">
             <input type="file" id="fileInput" accept="image/*">
             <label for="fileInput" class="upload-btn">+ Upload New Artwork</label>
-            <input type="text" id="searchInput" class="search-box" placeholder="Search gallery by title..." oninput="filterGallery()">
+            <input type="text" id="searchInput" class="search-box" placeholder="Search gallery by title...">
         </div>
 
         <div class="section-title-row">
@@ -435,11 +435,11 @@
         <div class="modal-content">
             <h3>New Artwork Details</h3>
             <img id="previewImage" src="" alt="Preview">
-            <input type="text" id="artTitle" placeholder="Artwork Title (e.g., Charcoal Portrait)">
-            <textarea id="artDescription" placeholder="Add a description, technique used, or inspiration..."></textarea>
+            <input type="text" id="artTitle" placeholder="Artwork Title (e.g., Charcoal Portrait)" value="Graphite Portrait">
+            <textarea id="artDescription" placeholder="Add a description, technique used, or inspiration...">A finely detailed graphite portrait capturing subtle tones, deep shadows, and realistic textures, showcasing meticulous shading and precise tonal depth.</textarea>
             <div class="modal-buttons">
-                <button class="cancel-btn" onclick="closeModal()">Cancel</button>
-                <button class="save-btn" onclick="saveNewArtwork()">Save & Publish</button>
+                <button class="cancel-btn" id="cancelUploadBtn" type="button">Cancel</button>
+                <button class="save-btn" id="saveNewArtworkBtn" type="button">Save & Publish</button>
             </div>
         </div>
     </div>
@@ -452,17 +452,17 @@
             <input type="text" id="editArtTitle" placeholder="Update Title">
             <textarea id="editArtDescription" placeholder="Update Description"></textarea>
             <div class="modal-buttons">
-                <button class="cancel-btn" onclick="closeEditModal()">Cancel</button>
-                <button class="save-btn" onclick="submitEditArtwork()">Save Changes</button>
+                <button class="cancel-btn" id="cancelEditBtn" type="button">Cancel</button>
+                <button class="save-btn" id="submitEditArtworkBtn" type="button">Save Changes</button>
             </div>
         </div>
     </div>
 
     <!-- Lightbox Zoom Modal -->
-    <div class="modal-overlay" id="lightboxModal" onclick="closeLightbox()">
-        <div class="modal-content" style="background: transparent; border: none; max-width: 800px;" onclick="event.stopPropagation()">
+    <div class="modal-overlay" id="lightboxModal">
+        <div class="modal-content" style="background: transparent; border: none; max-width: 800px;" id="lightboxInner">
             <img id="lightboxImage" src="" alt="Full Zoom">
-            <button class="control-btn" onclick="closeLightbox()" style="margin-top: 15px;">Close Preview</button>
+            <button class="control-btn" id="closeLightboxBtn" type="button" style="margin-top: 15px;">Close Preview</button>
         </div>
     </div>
 
@@ -489,9 +489,10 @@
         let temporaryImageData = "";
         let globalArtworksList = [];
 
-        window.onload = function() {
+        window.addEventListener('DOMContentLoaded', () => {
             loadGallery();
-        };
+            setupEventListeners();
+        });
 
         function showToast(message) {
             const toast = document.getElementById('toastBanner');
@@ -500,7 +501,7 @@
             setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
-        window.toggleTheme = function() {
+        function toggleTheme() {
             const body = document.body;
             const currentTheme = body.getAttribute('data-theme');
             if (currentTheme === 'dark') {
@@ -510,7 +511,7 @@
                 body.setAttribute('data-theme', 'dark');
                 showToast('Switched to Dark Mode');
             }
-        };
+        }
 
         async function loadGallery() {
             try {
@@ -547,17 +548,39 @@
                 card.className = 'gallery-item';
                 
                 card.innerHTML = `
-                    <img src="${artObj.image}" alt="${artObj.title}" onclick="openLightbox('${artObj.image}')">
+                    <img src="${artObj.image}" alt="${escapeAttr(artObj.title)}" class="gallery-thumb-img" data-img-src="${artObj.image}">
                     <div class="art-details">
                         <h4>${artObj.title}</h4>
                         <p>${artObj.description}</p>
                         <div class="card-buttons">
-                            <button class="edit-btn" onclick="openEditModal('${artObj.id}', '${escapeAttr(artObj.title)}', '${escapeAttr(artObj.description)}')">Edit</button>
-                            <button class="delete-btn" onclick="deleteArtwork('${artObj.id}')">Delete</button>
+                            <button class="edit-btn" data-art-id="${artObj.id}" data-art-title="${escapeAttr(artObj.title)}" data-art-desc="${escapeAttr(artObj.description)}">Edit</button>
+                            <button class="delete-btn" data-art-id="${artObj.id}">Delete</button>
                         </div>
                     </div>
                 `;
                 galleryGrid.appendChild(card);
+            });
+
+            document.querySelectorAll('.gallery-thumb-img').forEach(img => {
+                img.addEventListener('click', function() {
+                    openLightbox(this.getAttribute('data-img-src'));
+                });
+            });
+
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    openEditModal(
+                        this.getAttribute('data-art-id'),
+                        this.getAttribute('data-art-title'),
+                        this.getAttribute('data-art-desc')
+                    );
+                });
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    deleteArtwork(this.getAttribute('data-art-id'));
+                });
             });
         }
 
@@ -565,43 +588,26 @@
             return str ? str.replace(/'/g, "&#39;").replace(/"/g, "&quot;") : '';
         }
 
-        window.filterGallery = function() {
+        function filterGallery() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const filtered = globalArtworksList.filter(art => 
                 art.title.toLowerCase().includes(query) || art.description.toLowerCase().includes(query)
             );
             renderGallery(filtered);
             document.getElementById('galleryCountLabel').innerText = `Showing ${filtered.length} pieces`;
-        };
+        }
 
-        // Direct, crash-free file reader
-        const fileInput = document.getElementById('fileInput');
-        fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(uploadEvent) {
-                temporaryImageData = uploadEvent.target.result;
-                
-                document.getElementById('previewImage').src = temporaryImageData;
-                document.getElementById('previewImage').style.display = 'block';
-                document.getElementById('artTitle').value = '';
-                document.getElementById('artDescription').value = '';
-                document.getElementById('uploadModal').style.display = 'flex';
-            };
-            reader.readAsDataURL(file);
-            fileInput.value = '';
-        });
-
-        window.closeModal = function() {
+        function closeModal() {
             document.getElementById('uploadModal').style.display = 'none';
             temporaryImageData = "";
-        };
+        }
 
-        window.saveNewArtwork = async function() {
-            const title = document.getElementById('artTitle').value.trim() || "Untitled Sketch";
-            const description = document.getElementById('artDescription').value.trim() || "No description provided.";
+        async function saveNewArtwork() {
+            const titleInput = document.getElementById('artTitle');
+            const descInput = document.getElementById('artDescription');
+            
+            const title = titleInput.value.trim() || "Graphite Portrait";
+            const description = descInput.value.trim() || "A finely detailed graphite portrait capturing subtle tones, deep shadows, and realistic textures, showcasing meticulous shading and precise tonal depth.";
             
             if (!temporaryImageData) {
                 showToast('Please select an image file first.');
@@ -609,6 +615,7 @@
             }
 
             try {
+                showToast('Publishing artwork...');
                 await addDoc(collection(db, "artworks"), {
                     image: temporaryImageData,
                     title: title,
@@ -622,20 +629,20 @@
                 console.error('Firebase Insert Error:', error);
                 showToast('Upload failed: ' + error.message);
             }
-        };
+        }
 
-        window.openEditModal = function(id, title, description) {
+        function openEditModal(id, title, description) {
             document.getElementById('editArtId').value = id;
             document.getElementById('editArtTitle').value = title;
             document.getElementById('editArtDescription').value = description;
             document.getElementById('editModal').style.display = 'flex';
-        };
+        }
 
-        window.closeEditModal = function() {
+        function closeEditModal() {
             document.getElementById('editModal').style.display = 'none';
-        };
+        }
 
-        window.submitEditArtwork = async function() {
+        async function submitEditArtwork() {
             const id = document.getElementById('editArtId').value;
             const updatedTitle = document.getElementById('editArtTitle').value.trim() || "Untitled Sketch";
             const updatedDescription = document.getElementById('editArtDescription').value.trim() || "No description provided.";
@@ -650,9 +657,9 @@
                 console.error('Firebase Update Error:', error);
                 showToast('Failed to update artwork.');
             }
-        };
+        }
 
-        window.deleteArtwork = async function(id) {
+        async function deleteArtwork(id) {
             if (!confirm("Are you sure you want to delete this piece?")) return;
 
             try {
@@ -663,19 +670,19 @@
                 console.error('Firebase Delete Error:', error);
                 showToast('Failed to delete artwork.');
             }
-        };
+        }
 
-        window.openLightbox = function(imgSrc) {
+        function openLightbox(imgSrc) {
             document.getElementById('lightboxImage').src = imgSrc;
             document.getElementById('lightboxImage').style.display = 'block';
             document.getElementById('lightboxModal').style.display = 'flex';
-        };
+        }
 
-        window.closeLightbox = function() {
+        function closeLightbox() {
             document.getElementById('lightboxModal').style.display = 'none';
-        };
+        }
 
-        window.exportDataJSON = function() {
+        function exportDataJSON() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(globalArtworksList, null, 2));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
@@ -684,14 +691,50 @@
             downloadAnchor.click();
             downloadAnchor.remove();
             showToast('Portfolio JSON backup downloaded.');
-        };
+        }
 
-        window.copyPublicLink = function() {
+        function copyPublicLink() {
             const publicUrl = window.location.href.replace('admin.html', 'index.html');
             navigator.clipboard.writeText(publicUrl).then(() => {
                 showToast('Public portfolio link copied to clipboard!');
             });
-        };
+        }
+
+        function setupEventListeners() {
+            const fileInput = document.getElementById('fileInput');
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(uploadEvent) {
+                    temporaryImageData = uploadEvent.target.result;
+                    
+                    document.getElementById('previewImage').src = temporaryImageData;
+                    document.getElementById('previewImage').style.display = 'block';
+                    document.getElementById('uploadModal').style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+                fileInput.value = '';
+            });
+
+            document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+            document.getElementById('exportJsonBtn').addEventListener('click', exportDataJSON);
+            document.getElementById('copyLinkBtn').addEventListener('click', copyPublicLink);
+            document.getElementById('searchInput').addEventListener('input', filterGallery);
+            
+            document.getElementById('cancelUploadBtn').addEventListener('click', closeModal);
+            document.getElementById('saveNewArtworkBtn').addEventListener('click', saveNewArtwork);
+            
+            document.getElementById('cancelEditBtn').addEventListener('click', closeEditModal);
+            document.getElementById('submitEditArtworkBtn').addEventListener('click', submitEditArtwork);
+            
+            document.getElementById('closeLightboxBtn').addEventListener('click', closeLightbox);
+            document.getElementById('lightboxModal').addEventListener('click', closeLightbox);
+            document.getElementById('lightboxInner').addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        }
     </script>
 </body>
 </html>
