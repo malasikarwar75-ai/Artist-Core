@@ -219,11 +219,36 @@
         }
         .calc-result { font-size: 1.4rem; font-weight: bold; color: #ff00ff; margin-top: 15px; }
 
+        /* Order Section Styles */
+        .order-box {
+            background: var(--glass-bg); backdrop-filter: blur(25px); padding: 50px 40px;
+            border-radius: 20px; border: 1px solid var(--glass-border); border-top: 4px solid var(--accent);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4); margin-bottom: 50px; text-align: center;
+        }
+        .order-box h2 { font-family: 'Cinzel', serif; font-size: 2.3rem; letter-spacing: 3px; text-transform: uppercase; margin-top: 0; margin-bottom: 15px; color: var(--text-main); }
+        .order-form { display: flex; flex-direction: column; gap: 20px; max-width: 550px; margin: 30px auto 0 auto; text-align: left; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 0.95rem; font-weight: 600; color: var(--text-muted); }
+        .form-control {
+            width: 100%; padding: 14px 18px; border-radius: 10px; background: rgba(0,0,0,0.4);
+            border: 1px solid var(--glass-border); color: var(--text-main); font-family: inherit; font-size: 1rem; outline: none; box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus { border-color: var(--accent); }
+        .form-control option { background-color: #12121c; color: #fff; }
+        .order-submit-btn {
+            background: linear-gradient(45deg, #25d366, #128c7e); color: #fff; border: none;
+            padding: 16px; font-size: 1.1rem; font-weight: bold; border-radius: 30px; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 2px; transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px;
+        }
+        .order-submit-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5); }
+
         /* Testimonials */
         .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px; }
         .testimonial-card { background: var(--glass-bg); backdrop-filter: blur(20px); padding: 30px; border-radius: 16px; border: 1px solid var(--glass-border); text-align: left; }
         .testimonial-card p { color: var(--text-muted); font-style: italic; font-size: 0.95rem; margin-bottom: 15px; }
-        .client-info { font-weight: 600; color: var(--accent); font-size: 0.9rem; }
+            .client-info { font-weight: 600; color: var(--accent); font-size: 0.9rem; }
 
         /* Contact Section */
         .contact-box {
@@ -381,8 +406,43 @@
                 <li><span>Couple portrait</span> INR 850</li>
                 <li><span>Custom Pet & Landscape Sketch</span> INR 750</li>
             </ul>
-            <p class="query-text">For custom requirements, please contact us directly.</p>
-            <a href="#contact" class="down-arrow"><i class="fas fa-chevron-down"></i></a>
+            <p class="query-text">For custom requirements, please place your order below.</p>
+            <a href="#orderSection" class="down-arrow"><i class="fas fa-chevron-down"></i></a>
+        </div>
+
+        <!-- DIRECT ORDER SECTION WITH PORTRAIT TYPE SELECTION -->
+        <div id="orderSection" class="order-box">
+            <h2>Place Your Order</h2>
+            <p style="color: var(--text-muted);">Select your desired portrait type and click the button to send your order instantly via WhatsApp to <strong style="color: var(--accent);">+91 9306882926</strong>[span_0](start_span)[span_0](end_span).</p>
+            <div class="order-form">
+                <div class="form-group">
+                    <label for="clientName">Your Name</label>
+                    <input type="text" id="clientName" class="form-control" placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label for="selectedPortraitType">Select Portrait Type</label>
+                    <select id="selectedPortraitType" class="form-control">
+                        <option value="Single Person Portrait (INR 600)">Single Person Portrait — INR 600</option>
+                        <option value="Couple Portrait (INR 850)">Couple Portrait — INR 850</option>
+                        <option value="Family Multi-Portrait (INR 1200)">Family Multi-Portrait — INR 1200</option>
+                        <option value="Custom Pet & Landscape Sketch (INR 750)">Custom Pet & Landscape Sketch — INR 750</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="portraitSize">Select Size & Details</label>
+                    <select id="portraitSize" class="form-control">
+                        <option value="A4 Standard Size">A4 Standard Size</option>
+                        <option value="A3 Premium Size">A3 Premium Size (+40% Detail)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="clientNotes">Special Instructions / Description</label>
+                    <textarea id="clientNotes" class="form-control" rows="3" placeholder="Mention any specific requirements or details..."></textarea>
+                </div>
+                <button type="button" class="order-submit-btn" onclick="sendOrderToWhatsApp()">
+                    <i class="fab fa-whatsapp" style="font-size: 1.3rem;"></i> Order via WhatsApp
+                </button>
+            </div>
         </div>
 
         <!-- TESTIMONIALS -->
@@ -448,7 +508,7 @@
             </div>
         </div>
     </div>
-
+                
     <footer>
         <div>&copy; 2026 ART CORE. All rights reserved. Designed for Master Fine Arts.</div>
         <div style="font-size: 0.8rem; color: var(--text-muted);">Secure Cloud Synced & Fully Optimized</div>
@@ -466,13 +526,12 @@
         import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyAEwOg97m8CW0n5DIPc_xRG_c7Jo70RUeA",
-            authDomain: "artwork-f5069.firebaseapp.com",
-            projectId: "artwork-f5069",
-            storageBucket: "artwork-f5069.firebasestorage.app",
-            messagingSenderId: "807482101594",
-            appId: "1:807482101594:web:4efda724f08881cdf5ad63",
-            measurementId: "G-1E1195CRMZ",
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "artwork",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -590,6 +649,25 @@
             document.getElementById('calcResultOutput').innerText = `Estimated Investment: INR ${total}`;
         };
 
+        window.sendOrderToWhatsApp = function() {
+            const name = document.getElementById('clientName').value.trim();
+            const portraitType = document.getElementById('selectedPortraitType').value;
+            const size = document.getElementById('portraitSize').value;
+            const notes = document.getElementById('clientNotes').value.trim();
+
+            if (!name) {
+                alert("Please enter your name before placing the order.");
+                document.getElementById('clientName').focus();
+                return;
+            }
+
+            const message = `Hello Art Core, I want to place an order!\n\n*Name:* ${name}\n*Portrait Type:* ${portraitType}\n*Size:* ${size}\n*Instructions:* ${notes || 'None'}`;
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/919306882926?text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
+        };
+
         window.toggleThemeMode = function() {
             const body = document.body;
             const current = body.getAttribute('data-theme');
@@ -614,7 +692,7 @@
             }
         };
 
-        window.openSubscriptionModal = function() { document.getElementById('subscriptionModal').style.display = 'flex'; };
+        window.openSubscriptionModal = function() { document.geElementById('subscriptionModal').style.display = 'flex'; };
         window.closeSubscriptionModal = function() { document.getElementById('subscriptionModal').style.display = 'none'; };
         
         window.processSubscription = async function() {
