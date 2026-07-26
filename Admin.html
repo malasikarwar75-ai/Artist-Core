@@ -3,95 +3,482 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Art Core - Open Dashboard</title>
+    <title>Art Core - Professional Master Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0d0d12; color: #e0e0e0; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
-        header { background: linear-gradient(90deg, #1a1a2e 0%, #16213e 100%); width: 100%; padding: 30px 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; }
-        h1 { color: #4facfe; margin: 0; font-size: 2.5rem; letter-spacing: 3px; text-transform: uppercase; }
-        .contact-info { color: #a8b2d1; font-size: 1.1rem; margin-top: 10px; }
-        .email-highlight { color: #00f2fe; font-weight: bold; }
-        
-        .content-wrapper { max-width: 900px; width: 90%; margin: 40px auto; text-align: center; }
-        .welcome-card { background-color: #1c1c28; padding: 40px; border-radius: 12px; border: 1px solid #2d2d3f; margin-bottom: 30px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-        .welcome-card h2 { color: #ffffff; margin-top: 0; letter-spacing: 1px; }
-        .welcome-card p { color: #8892b0; line-height: 1.6; font-size: 1.1rem; }
+        :root {
+            --bg-primary: #0d0d12;
+            --bg-secondary: #1c1c28;
+            --bg-card: #161622;
+            --text-main: #e0e0e0;
+            --text-muted: #8892b0;
+            --accent: #4facfe;
+            --accent-glow: rgba(79, 172, 254, 0.4);
+            --border-color: #2d2d3f;
+        }
 
-        .upload-section { margin-bottom: 40px; }
+        [data-theme="light"] {
+            --bg-primary: #f4f6f9;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-main: #222222;
+            --text-muted: #666666;
+            --accent: #0066cc;
+            --accent-glow: rgba(0, 102, 204, 0.2);
+            --border-color: #dcdcdc;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        header {
+            background: var(--bg-secondary);
+            width: 100%;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent);
+            margin: 0;
+            font-size: 2.8rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .header-subtext {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        .top-controls {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .content-wrapper {
+            max-width: 1100px;
+            width: 90%;
+            margin: 40px auto;
+            text-align: center;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05srem;
+            padding: 8px 16px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* Dashboard Overview Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        .stat-card h4 {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin-top: 10px;
+        }
+
+        .welcome-card {
+            background-color: var(--bg-secondary);
+            padding: 35px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .welcome-card h2 {
+            color: var(--text-main);
+            margin-top: 0;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 2px;
+        }
+
+        .welcome-card p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .action-toolbar {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
         #fileInput { display: none; }
-        .upload-btn { background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%); color: #0d0d12; border: none; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; border-radius: 8px; cursor: pointer; display: inline-block; transition: transform 0.2s, box-shadow 0.2s; }
-        .upload-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4); }
+        
+        .upload-btn {
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            color: #0d0d12;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-block;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--accent-glow);
+        }
 
-        h3 { color: #e0e0e0; font-size: 1.5rem; margin-top: 40px; margin-bottom: 20px; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        
-        .gallery-item { background-color: #1c1c28; border-radius: 8px; overflow: hidden; border: 1px solid #2d2d3f; text-align: left; display: flex; flex-direction: column; position: relative; }
-        .gallery-item img { width: 100%; height: 220px; object-fit: cover; border-bottom: 1px solid #2d2d3f; }
-        .art-details { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
-        .art-details h4 { margin: 0 0 8px 0; color: #ffffff; font-size: 1.2rem; }
-        .art-details p { margin: 0 0 15px 0; color: #8892b0; font-size: 0.95rem; line-height: 1.4; flex-grow: 1; }
-        
-        /* Delete Button Style */
-        .delete-btn { background-color: #ff4757; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; width: 100%; }
-        .delete-btn:hover { background-color: #ff6b81; }
+        .search-box {
+            padding: 14px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-main);
+            font-size: 1rem;
+            width: 280px;
+            outline: none;
+        }
+        .search-box:focus { border-color: var(--accent); }
 
-        .empty-text { color: #8892b0; font-style: italic; text-align: center; grid-column: 1 / -1; padding: 40px; }
+        .section-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0 20px 0;
+        }
 
-        /* The Popup Menu (Modal) */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background-color: #1c1c28; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; border: 1px solid #4facfe; box-shadow: 0 10px 30px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 15px; }
-        .modal-content h3 { margin: 0; color: #4facfe; text-align: center; }
-        #previewImage { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid #2d2d3f; display: none; }
+        h3 { color: var(--text-main); font-size: 1.5rem; margin: 0; font-family: 'Cinzel', serif; letter-spacing: 1px; }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
         
-        .modal-content input, .modal-content textarea { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #2d2d3f; background-color: #0d0d12; color: #fff; font-size: 1rem; box-sizing: border-box; font-family: inherit; }
-        .modal-content textarea { resize: vertical; min-height: 90px; }
-        .modal-content input::placeholder, .modal-content textarea::placeholder { color: #5a6482; }
-        
-        .modal-buttons { display: flex; gap: 10px; margin-top: 5px; }
-        .modal-buttons button { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: background 0.2s; }
-        .cancel-btn { background-color: #2d2d3f; color: #e0e0e0; }
-        .cancel-btn:hover { background-color: #3f3f5a; }
+        .gallery-item {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .art-details {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .art-details h4 { margin: 0 0 8px 0; color: var(--text-main); font-size: 1.2rem; }
+        .art-details p { margin: 0 0 20px 0; color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; flex-grow: 1; }
+
+        .card-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-btn {
+            background-color: #2e2e48;
+            color: #4facfe;
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+            transition: background 0.2s;
+        }
+        .edit-btn:hover { background-color: #3f3f5a; }
+
+        .delete-btn {
+            background-color: rgba(255, 71, 87, 0.15);
+            color: #ff4757;
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+            transition: background 0.2s;
+        }
+        .delete-btn:hover { background-color: #ff4757; color: #fff; }
+
+        .empty-text {
+            color: var(--text-muted);
+            font-style: italic;
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 50px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Modals Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 450px;
+            border: 1px solid var(--accent);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            box-sizing: border-box;
+        }
+
+        .modal-content h3 { margin: 0; color: var(--accent); text-align: center; }
+        #previewImage, #lightboxImage { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); display: none; }
+        #lightboxImage { height: auto; max-height: 75vh; }
+
+        .modal-content input, .modal-content textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-size: 1rem;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .modal-content textarea { resize: vertical; min-height: 100px; }
+
+        .modal-buttons { display: flex; gap: 12px; margin-top: 5px; }
+        .modal-buttons button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: background 0.2s; }
+        .cancel-btn { background-color: var(--border-color); color: var(--text-main); }
+        .cancel-btn:hover { opacity: 0.8; }
         .save-btn { background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%); color: #0d0d12; }
+
+        /* Toast Notification Banner */
+        #toastBanner {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-secondary);
+            color: var(--text-main);
+            padding: 14px 24px;
+            border-radius: 10px;
+            border: 1px solid var(--accent);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            z-index: 2000;
+            display: none;
+            font-weight: 600;
+            animation: fadeInOut 0.3s ease;
+        }
+
+        @keyframes fadeInOut {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
-<body>
+<body data-theme="dark">
 
     <header>
         <h1>Art Core</h1>
-        <div class="contact-info">Admin: <span class="email-highlight">malasikarwar75@gmail.com</span></div>
+        <div class="header-subtext">Master Control Dashboard & Archive</div>
+        <div class="top-controls">
+            <button class="control-btn" onclick="toggleTheme()">🌓 Theme</button>
+            <button class="control-btn" onclick="exportDataJSON()">📥 Export JSON</button>
+        </div>
     </header>
 
     <div class="content-wrapper">
-        <a href="Public.html" style="color: #00f2fe; text-decoration: none; font-size: 1.1rem; display: block; margin-bottom: 25px; font-weight: bold;">➔ View Public Portfolio</a>
+        <div class="nav-links">
+            <a href="index.html" target="_blank">➔ View Public Portfolio</a>
+            <a href="#" onclick="copyPublicLink()">🔗 Copy Portfolio Link</a>
+            <a href="#" onclick="resetAllArtworksPrompt()">⚠️ Clear Database Cache</a>
+        </div>
+
+        <!-- 3. Dashboard Statistics Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h4>Total Artworks</h4>
+                <div class="stat-value" id="statTotal">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Database Status</h4>
+                <div class="stat-value" style="font-size: 1.4rem; color: #2ed573; margin-top: 15px;">Connected 🟢</div>
+            </div>
+            <div class="stat-card">
+                <h4>Admin Profile</h4>
+                <div class="stat-value" style="font-size: 1rem; color: var(--text-muted); margin-top: 18px; word-break: break-all;">malasikarwar75@gmail.com</div>
+            </div>
+        </div>
 
         <div class="welcome-card">
-            <h2>Dashboard</h2>
-            <p>Upload your sketches, add titles, descriptions, or manage your existing gallery items.</p>
+            <h2>Welcome Back, Creator</h2>
+            <p>Manage your professional sketching portfolio effortlessly. Upload high-resolution pieces, update descriptive breakdowns, organize your pricing categories, and push live updates instantly to your public web gallery.</p>
         </div>
 
-        <div class="upload-section">
+        <div class="action-toolbar">
             <input type="file" id="fileInput" accept="image/*">
-            <label for="fileInput" class="upload-btn">+ Upload Artwork</label>
+            <label for="fileInput" class="upload-btn">+ Upload New Artwork</label>
+            <input type="text" id="searchInput" class="search-box" placeholder="Search gallery by title..." oninput="filterGallery()">
         </div>
 
-        <h3>Your Gallery</h3>
+        <div class="section-title-row">
+            <h3>Manage Gallery</h3>
+            <span id="galleryCountLabel" style="color: var(--text-muted); font-size: 0.95rem;">Showing 0 pieces</span>
+        </div>
+
         <div class="gallery-grid" id="galleryGrid">
-            <div id="placeholder" class="empty-text">No artworks uploaded yet.</div>
+            <div id="placeholder" class="empty-text">No artworks uploaded yet. Click upload to get started.</div>
         </div>
     </div>
 
-    <!-- The Popup Menu -->
+    <!-- Upload / New Artwork Modal -->
     <div class="modal-overlay" id="uploadModal">
         <div class="modal-content">
-            <h3>Artwork Details</h3>
+            <h3>New Artwork Details</h3>
             <img id="previewImage" src="" alt="Preview">
-            <input type="text" id="artTitle" placeholder="Artwork Name (e.g., Charcoal Portrait)">
+            <input type="text" id="artTitle" placeholder="Artwork Title (e.g., Charcoal Portrait)">
             <textarea id="artDescription" placeholder="Add a description, technique used, or inspiration..."></textarea>
             <div class="modal-buttons">
                 <button class="cancel-btn" onclick="closeModal()">Cancel</button>
-                <button class="save-btn" onclick="saveArtwork()">Save Artwork</button>
+                <button class="save-btn" onclick="saveNewArtwork()">Save & Publish</button>
             </div>
         </div>
     </div>
+
+    <!-- 1. Edit Artwork Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-content">
+            <h3>Edit Artwork</h3>
+            <input type="hidden" id="editArtId">
+            <input type="text" id="editArtTitle" placeholder="Update Title">
+            <textarea id="editArtDescription" placeholder="Update Description"></textarea>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeEditModal()">Cancel</button>
+                <button class="save-btn" onclick="submitEditArtwork()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. Lightbox Image Zoom Modal -->
+    <div class="modal-overlay" id="lightboxModal" onclick="closeLightbox()">
+        <div class="modal-content" style="background: transparent; border: none; max-width: 800px;" onclick="event.stopPropagation()">
+            <img id="lightboxImage" src="" alt="Full Zoom">
+            <button class="control-btn" onclick="closeLightbox()" style="margin-top: 15px;">Close Preview</button>
+        </div>
+    </div>
+
+    <!-- 8. Toast Notification System -->
+    <div id="toastBanner">Notification Message</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -106,13 +493,46 @@
         const previewImage = document.getElementById('previewImage');
         const artTitleInput = document.getElementById('artTitle');
         const artDescriptionInput = document.getElementById('artDescription');
-        
+
+        const editModal = document.getElementById('editModal');
+        const editArtId = document.getElementById('editArtId');
+        const editArtTitle = document.getElementById('editArtTitle');
+        const editArtDescription = document.getElementById('editArtDescription');
+
+        const lightboxModal = document.getElementById('lightboxModal');
+        const lightboxImage = document.getElementById('lightboxImage');
+
         let temporaryImageData = "";
+        let globalArtworksList = [];
 
         window.onload = function() {
             loadGallery();
         };
 
+        // 8. Toast Notification Function
+        function showToast(message) {
+            const toast = document.getElementById('toastBanner');
+            toast.innerText = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // 4. Dark / Light Theme Toggle Function
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                showToast('Switched to Light Mode');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                showToast('Switched to Dark Mode');
+            }
+        }
+
+        // Load Gallery Data from Supabase
         async function loadGallery() {
             try {
                 const { data: savedArt, error } = await supabase
@@ -121,34 +541,76 @@
 
                 if (error) {
                     console.error('Error loading gallery:', error);
+                    showToast('Failed to load gallery database.');
                     return;
                 }
 
-                galleryGrid.innerHTML = '';
-                
-                if (!savedArt || savedArt.length === 0) {
-                    galleryGrid.innerHTML = '<div id="placeholder" class="empty-text">No artworks uploaded yet.</div>';
-                    return;
-                }
-
-                savedArt.slice().reverse().forEach((artObj) => {
-                    displayArtwork(artObj);
-                });
+                globalArtworksList = savedArt || [];
+                renderGallery(globalArtworksList);
+                updateStats(globalArtworksList.length);
             } catch (err) {
                 console.error('Unexpected error loading gallery:', err);
             }
         }
 
-        fileInput.addEventListener('change', function(event) {
-            const file = event.target.files[0];
+        function updateStats(totalCount) {
+            document.getElementById('statTotal').innerText = totalCount;
+            document.getElementById('galleryCountLabel').innerText = `Showing ${totalCount} pieces`;
+        }
+
+        // Render Gallery Cards
+        function renderGallery(artworks) {
+            galleryGrid.innerHTML = '';
+            
+            if (!artworks || artworks.length === 0) {
+                galleryGrid.innerHTML = '<div id="placeholder" class="empty-text">No artworks found in your portfolio archive.</div>';
+                return;
+            }
+
+            artworks.slice().reverse().forEach((artObj) => {
+                const card = document.createElement('div');
+                card.className = 'gallery-item';
+                
+                card.innerHTML = `
+                    <img src="${artObj.image}" alt="${artObj.title}" onclick="openLightbox('${artObj.image}')">
+                    <div class="art-details">
+                        <h4>${artObj.title}</h4>
+                        <p>${artObj.description}</p>
+                        <div class="card-buttons">
+                            <button class="edit-btn" onclick="openEditModal('${artObj.id}', '${escapeAttr(artObj.title)}', '${escapeAttr(artObj.description)}')">Edit</button>
+                            <button class="delete-btn" onclick="deleteArtwork('${artObj.id}')">Delete</button>
+                        </div>
+                    </div>
+                `;
+                galleryGrid.appendChild(card);
+            });
+        }
+
+        function escapeAttr(str) {
+            return str ? str.replace(/'/g, "&#39;").replace(/"/g, "&quot;") : '';
+        }
+
+        // 2. Search & Filter Gallery Function
+        function filterGallery() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = globalArtworksList.filter(art => 
+                art.title.toLowerCase().includes(query) || art.description.toLowerCase().includes(query)
+            );
+            renderGallery(filtered);
+            document.getElementById('galleryCountLabel').innerText = `Showing ${filtered.length} pieces`;
+        }
+
+        // File Selection & Compression
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function(uploadEvent) {
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_SIZE = 800;
+                    const MAX_SIZE = 700;
                     let width = img.width;
                     let height = img.height;
 
@@ -169,7 +631,7 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    temporaryImageData = canvas.toDataURL('image/jpeg', 0.7);
+                    temporaryImageData = canvas.toDataURL('image/jpeg', 0.65);
                     
                     previewImage.src = temporaryImageData;
                     previewImage.style.display = 'block';
@@ -177,23 +639,23 @@
                     artDescriptionInput.value = '';
                     modal.style.display = 'flex';
                 };
-                img.src = e.target.result;
+                img.src = uploadEvent.target.result;
             };
             reader.readAsDataURL(file);
+            fileInput.value = '';
         });
 
         function closeModal() {
             modal.style.display = 'none';
             temporaryImageData = "";
-            fileInput.value = '';
         }
 
-        async function saveArtwork() {
+        async function saveNewArtwork() {
             const title = artTitleInput.value.trim() || "Untitled Sketch";
             const description = artDescriptionInput.value.trim() || "No description provided.";
             
             if (!temporaryImageData) {
-                alert('Please select an image first.');
+                showToast('Please select an image file first.');
                 return;
             }
 
@@ -209,15 +671,49 @@
 
             if (error) {
                 console.error('Supabase Insert Error:', error);
-                alert('Upload failed: ' + error.message);
+                showToast('Upload failed: ' + error.message);
             } else {
-                alert('Artwork uploaded successfully!');
+                showToast('Artwork published successfully!');
                 closeModal();
                 loadGallery();
             }
         }
 
+        // 1. Edit Modal Controllers
+        function openEditModal(id, title, description) {
+            editArtId.value = id;
+            editArtTitle.value = title;
+            editArtDescription.value = description;
+            editModal.style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            editModal.style.display = 'none';
+        }
+
+        async function submitEditArtwork() {
+            const id = editArtId.value;
+            const updatedTitle = editArtTitle.value.trim() || "Untitled Sketch";
+            const updatedDescription = editArtDescription.value.trim() || "No description provided.";
+
+            const { error } = await supabase
+                .from('artworks')
+                .update({ title: updatedTitle, description: updatedDescription })
+                .eq('id', id);
+
+            if (error) {
+                console.error('Update Error:', error);
+                showToast('Failed to update artwork.');
+            } else {
+                showToast('Artwork updated successfully!');
+                closeEditModal();
+                loadGallery();
+            }
+        }
+
         async function deleteArtwork(id) {
+            if (!confirm("Are you sure you want to delete this piece?")) return;
+
             const { error } = await supabase
                 .from('artworks')
                 .delete()
@@ -225,26 +721,51 @@
 
             if (error) {
                 console.error('Error deleting artwork:', error);
-                alert('Failed to delete artwork.');
+                showToast('Failed to delete artwork.');
             } else {
+                showToast('Artwork deleted successfully.');
                 loadGallery();
             }
         }
 
-        function displayArtwork(artObj) {
-            const card = document.createElement('div');
-            card.className = 'gallery-item';
-            
-            card.innerHTML = `
-                <img src="${artObj.image}" alt="${artObj.title}">
-                <div class="art-details">
-                    <h4>${artObj.title}</h4>
-                    <p>${artObj.description}</p>
-                    <button class="delete-btn" onclick="deleteArtwork('${artObj.id}')">Delete</button>
-                </div>
-            `;
-            
-            galleryGrid.appendChild(card);
+        // 7. Lightbox Zoom Controllers
+        function openLightbox(imgSrc) {
+            lightboxImage.src = imgSrc;
+            lightboxImage.style.display = 'block';
+            lightboxModal.style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            lightboxModal.style.display = 'none';
+        }
+
+        // 5. Export JSON Function
+        function exportDataJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(globalArtworksList, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "art_core_backup.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast('Portfolio JSON backup downloaded.');
+        }
+
+        // 9. Copy Portfolio Link Function
+        function copyPublicLink() {
+            const publicUrl = window.location.href.replace('admin.html', 'index.html');
+            navigator.clipboard.writeText(publicUrl).then(() => {
+                showToast('Public portfolio link copied to clipboard!');
+            });
+        }
+
+        function resetAllArtworksPrompt() {
+            if (confirm("This will clear your local view cache. Proceed?")) {
+                globalArtworksList = [];
+                renderGallery([]);
+                updateStats(0);
+                showToast('Local dashboard cache cleared.');
+            }
         }
     </script>
 </body>
