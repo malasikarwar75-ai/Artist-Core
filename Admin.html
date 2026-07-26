@@ -92,11 +92,12 @@
             </div>
         </div>
     </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const supabaseUrl = 'https://kqcmkwvajvfabaltcbga.supabase.co';
-const supabaseKey = 'Sb_publishable_6KEwJLiy4PcyGUs7uQqONg_Xw58CrHs';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        const supabaseKey = 'Sb_publishable_6KEwJLiy4PcyGUs7uQqONg_Xw58CrHs';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
         
         const fileInput = document.getElementById('fileInput');
         const galleryGrid = document.getElementById('galleryGrid');
@@ -113,41 +114,33 @@ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
             loadGallery();
         };
 
-        function loadGallery() {
-            let savedArt = [];
+        async function loadGallery() {
             try {
-                const { data, error } = await supabase
-    .from('artworks') // Make sure this matches your Supabase table name
-    .insert([
-        { 
-            title: titleValue, // Replace with your actual title variable
-            description: descriptionValue, // Replace with your actual description variable
-            image: imageValue // Replace with your actual image variable
-        }
-    ]);
+                const { data: savedArt, error } = await supabase
+                    .from('artworks')
+                    .select('*');
 
-if (error) {
-    console.error('Error uploading:', error);
-    alert('Failed to upload artwork.');
-} else {
-    alert('Artwork uploaded successfully!');
-} 
+                if (error) {
+                    console.error('Error loading gallery:', error);
+                    galleryGrid.innerHTML = '<div class="empty-text">Failed to load artworks.</div>';
+                    return;
                 }
-            } catch (e) { savedArt = []; }
 
-            galleryGrid.innerHTML = '';
-            
-            if (savedArt.length === 0) {
-                galleryGrid.innerHTML = '<div id="placeholder" class="empty-text">No artworks uploaded yet.</div>';
-                return;
+                galleryGrid.innerHTML = '';
+                
+                if (!savedArt || savedArt.length === 0) {
+                    galleryGrid.innerHTML = '<div id="placeholder" class="empty-text">No artworks uploaded yet.</div>';
+                    return;
+                }
+
+                // Render items from newest to oldest
+                savedArt.slice().reverse().forEach((artObj) => {
+                    displayArtwork(artObj);
+                });
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                galleryGrid.innerHTML = '<div class="empty-text">Error connecting to database.</div>';
             }
-
-            // Render items from newest to oldest
-            savedArt.slice().reverse().forEach((artObj, index) => {
-                // Calculate original index in the array for deletion reference
-                const originalIndex = savedArt.length - 1 - index;
-                displayArtwork(artObj, originalIndex);
-            });
         }
 
         fileInput.addEventListener('change', function(event) {
@@ -173,7 +166,7 @@ if (error) {
             temporaryImageData = "";
         }
 
-        function saveArtwork() {
+        async function saveArtwork() {
             const title = artTitleInput.value.trim() || "Untitled Sketch";
             const description = artDescriptionInput.value.trim() || "No description provided.";
             
@@ -183,26 +176,35 @@ if (error) {
                 description: description
             };
 
-            let savedArt = JSON.parse(localStorage.getItem('artCoreGallery') || '[]');
-            if (savedArt.length > 0 && typeof savedArt[0] === 'string') savedArt = [];
-            
-            savedArt.push(newArtwork);
-            localStorage.setItem('artCoreGallery', JSON.stringify(savedArt));
+            const { error } = await supabase
+                .from('artworks')
+                .insert([newArtwork]);
 
-            closeModal();
-            loadGallery();
+            if (error) {
+                console.error('Error uploading artwork:', error);
+                alert('Failed to upload artwork to database.');
+            } else {
+                alert('Artwork uploaded successfully!');
+                closeModal();
+                loadGallery();
+            }
         }
 
-        function deleteArtwork(index) {
-            let savedArt = JSON.parse(localStorage.getItem('artCoreGallery') || '[]');
-            if (index >= 0 && index < savedArt.length) {
-                savedArt.splice(index, 1); // Remove item from array
-                localStorage.setItem('artCoreGallery', JSON.stringify(savedArt));
+        async function deleteArtwork(id) {
+            const { error } = await supabase
+                .from('artworks')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                console.error('Error deleting artwork:', error);
+                alert('Failed to delete artwork.');
+            } else {
                 loadGallery(); // Refresh admin view
             }
         }
 
-        function displayArtwork(artObj, index) {
+        function displayArtwork(artObj) {
             const card = document.createElement('div');
             card.className = 'gallery-item';
             
@@ -211,7 +213,7 @@ if (error) {
                 <div class="art-details">
                     <h4>${artObj.title}</h4>
                     <p>${artObj.description}</p>
-                    <button class="delete-btn" onclick="deleteArtwork(${index})">Delete</button>
+                    <button class="delete-btn" onclick="deleteArtwork('${artObj.id}')">Delete</button>
                 </div>
             `;
             
