@@ -186,19 +186,29 @@
         }
         .filter-select option { background-color: #12121c; color: #ffffff; padding: 10px; }
 
-        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-bottom: 40px; }
         .art-card {
             background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--glass-border);
             border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; color: var(--text-main);
             transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
         }
         .art-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 15px 45px rgba(0, 210, 255, 0.3); background: var(--card-hover-bg); }
-        .art-card img { width: 100%; height: 300px; object-fit: cover; border-bottom: 1px solid var(--glass-border); cursor: pointer; }
+        .art-card img { width: 100%; height: 300px; object-fit: cover; border-bottom: 1px solid var(--glass-border); }
         .art-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
         .art-info h3 { margin: 0 0 8px 0; color: var(--text-main); font-weight: 600; font-size: 1.15rem; letter-spacing: 1px; text-transform: uppercase; }
-        .art-info p { margin: 0 0 15px 0; color: var(--text-muted); font-size: 0.9rem; font-weight: 300; flex-grow: 1; }
-        .art-meta { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; font-size: 0.85rem; color: var(--text-muted); }
-        .like-btn { background: none; border: none; color: #ff4757; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 5px; }
+        .art-info p { margin: 0 0 15px 0; color: var(--text-muted); font-size: 0.9rem; font-weight: 300; }
+        
+        /* Realistic Likes & Comments UI */
+        .art-actions { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; margin-top: auto; }
+        .btn-like { background: rgba(0,229,255,0.1); border: 1px solid var(--accent); color: var(--accent); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px; transition: background 0.2s; font-size: 0.85rem; }
+        .btn-like:hover { background: rgba(0,229,255,0.3); }
+
+        .comments-section { margin-top: 15px; border-top: 1px dashed var(--glass-border); padding-top: 12px; }
+        .comments-list { max-height: 110px; overflow-y: auto; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .comment-item { background: rgba(0,0,0,0.4); padding: 6px 10px; border-radius: 6px; border-left: 2px solid var(--accent); text-align: left; }
+        .comment-input-row { display: flex; gap: 8px; }
+        .comment-input-row input { flex-grow: 1; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); border-radius: 6px; padding: 6px 10px; color: #fff; font-size: 0.8rem; outline: none; font-family: inherit; }
+        .comment-input-row button { background: var(--accent); color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
 
         /* Pricing & Calculator */
         .pricing-box {
@@ -323,13 +333,13 @@
     <!-- Top Utility Bar -->
     <div class="utility-bar">
         <div class="utility-links">
-            <span class="ripple-element"><i class="fas fa-envelope"></i> <a href="mailto:malasikarwar75@gmail.com">malasikarwar75@gmail.com</a></span>
-            <span class="ripple-element"><i class="fas fa-phone"></i> <a href="tel:9306882926">+91 9306882926</a></span>
+            <span class="ripple-element" id="userAuthStatus"><i class="fas fa-user-circle"></i> Connecting Account...</span>
         </div>
         <div class="utility-links">
             <span class="ripple-element" onclick="toggleThemeMode()"><i class="fas fa-adjust" id="themeIcon"></i> Toggle Theme</span>
             <span class="ripple-element" onclick="toggleReadOnlyMode()"><i class="fas fa-eye" id="readonlyIcon"></i> <span id="readonlyText">Read-Only Mode</span></span>
             <span class="ripple-element" onclick="openNewsletterModal()"><i class="fas fa-paper-plane"></i> Newsletter</span>
+            <span class="ripple-element" onclick="location.href='admin.html'"><i class="fas fa-cog"></i> Admin Studio</span>
         </div>
     </div>
 
@@ -381,9 +391,9 @@
             <button class="subscribe-btn action-trigger ripple-element" onclick="openSubscriptionModal()">Join 1-Year VIP Club — INR 250</button>
         </div>
 
-        <!-- GALLERY CONTROLS (Search Removed, Sort Retained) -->
+        <!-- GALLERY CONTROLS -->
         <div class="gallery-controls">
-            <h3 style="font-family: 'Cinzel', serif; margin: 0; font-size: 1.4rem; color: var(--text-main);">Featured Masterpieces</h3>
+            <h3 style="font-family: 'Cinzel', serif; margin: 0; font-size: 1.4rem; color: var(--text-main);">Live Cloud Gallery</h3>
             <select id="gallerySort" class="filter-select ripple-element" onchange="sortGalleryArtworks()">
                 <option value="newest">Sort: Newest</option>
                 <option value="popular">Sort: Most Liked</option>
@@ -392,7 +402,7 @@
 
         <!-- VISITOR GALLERY -->
         <div class="gallery" id="publicGallery">
-            <!-- Dynamically populated -->
+            <!-- Dynamically populated from Firestore -->
         </div>
 
         <!-- COMMISSION ESTIMATOR -->
@@ -508,7 +518,7 @@
     <!-- JavaScript Execution Engine -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, increment, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
         const firebaseConfig = {
@@ -529,6 +539,7 @@
         let currentUser = null;
         let qrTimerInterval = null;
         let isReadOnly = false;
+        const READONLY_MASTER_PIN = "@abhay0000111122223333@abhay0000111122223333";
 
         // Water Drop Ripple Effect Script
         document.addEventListener('click', function(e) {
@@ -548,17 +559,36 @@
             }
         });
 
-        onAuthStateChanged(auth, (user) => {
+        // Auth state observer & visitor logging
+        onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             const authBtnText = document.getElementById('authButtonText');
+            const statusEl = document.getElementById('userAuthStatus');
+
             if (user) {
                 authBtnText.innerText = `Sign Out (${user.displayName || user.email.split('@')[0]})`;
+                statusEl.innerHTML = `<i class="fas fa-user-check" style="color: #00ff66;"></i> ${user.email}`;
+                try {
+                    await addDoc(collection(db, "visitors"), {
+                        email: user.email,
+                        visitorId: user.uid,
+                        timestamp: new Date()
+                    });
+                } catch(e) { console.error("Visitor logging error:", e); }
             } else {
                 authBtnText.innerText = "Google Sign In / Up";
+                statusEl.innerHTML = `<i class="fas fa-user-circle"></i> Guest Visitor`;
             }
         });
 
         window.toggleReadOnlyMode = function() {
+            const enteredPin = prompt("Enter Master PIN to toggle Read-Only Mode status:");
+            if (enteredPin === null) return;
+            if (enteredPin !== READONLY_MASTER_PIN) {
+                alert("Access Denied! Incorrect Master PIN.");
+                return;
+            }
+
             isReadOnly = !isReadOnly;
             const banner = document.getElementById('readonlyBanner');
             const icon = document.getElementById('readonlyIcon');
@@ -634,7 +664,75 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             loadPublicGallery();
+            checkLiveBroadcasts();
         });
+
+        // Real-time Likes Function
+        window.likeArtwork = async function(artId) {
+            if (isReadOnly) return;
+            try {
+                const artRef = doc(db, "artworks", artId);
+                await updateDoc(artRef, {
+                    likes: increment(1)
+                });
+                loadPublicGallery();
+            } catch (err) {
+                console.error("Error liking artwork:", err);
+                alert("Failed to register like.");
+            }
+        };
+
+        // Post Comment Function
+        window.postComment = async function(artId) {
+            if (isReadOnly) return;
+            const inputEl = document.getElementById(`commentInput_${artId}`);
+            const commentText = inputEl.value.trim();
+
+            if (!commentText) {
+                alert("Please type a comment before posting.");
+                return;
+            }
+
+            const authorName = currentUser ? currentUser.displayName || currentUser.email : "Guest Visitor";
+
+            try {
+                await addDoc(collection(db, `artworks/${artId}/comments`), {
+                    author: authorName,
+                    text: commentText,
+                    timestamp: new Date()
+                });
+                inputEl.value = '';
+                loadComments(artId);
+            } catch (err) {
+                console.error("Error posting comment:", err);
+                alert("Failed to post comment.");
+            }
+        };
+
+        // Load Comments for an Artwork
+        async function loadComments(artId) {
+            const listContainer = document.getElementById(`commentsList_${artId}`);
+            if (!listContainer) return;
+            try {
+                const querySnapshot = await getDocs(collection(db, `artworks/${artId}/comments`));
+                listContainer.innerHTML = '';
+
+                if (querySnapshot.empty) {
+                    listContainer.innerHTML = '<div style="font-size: 0.75rem; color: var(--text-muted);">No comments yet. Be the first!</div>';
+                    return;
+                }
+
+                querySnapshot.forEach((docSnap) => {
+                    const c = docSnap.data();
+                    const item = document.createElement('div');
+                    item.className = 'comment-item';
+                    item.innerHTML = `<strong>${c.author}:</strong> ${c.text}`;
+                    listContainer.appendChild(item);
+                });
+            } catch (err) {
+                console.error("Error loading comments:", err);
+            }
+        }
 
         async function loadPublicGallery() {
             const gallery = document.getElementById('publicGallery');
@@ -645,20 +743,23 @@
                     return;
                 }
                 cachedArtworks = [];
-                querySnapshot.forEach((doc) => {
-                    cachedArtworks.push(doc.data());
+                querySnapshot.forEach((docSnap) => {
+                    cachedArtworks.push({ id: docSnap.id, ...docSnap.data() });
                 });
                 renderArtworksGrid(cachedArtworks);
             } catch (error) {
                 console.error("Error loading artworks: ", error);
-                gallery.innerHTML = '<p style="color: var(--text-muted); width: 100%; text-align: center; grid-column: 1 / -1; font-size: 1rem;">Failed to load artworks from cloud database. Check security rules or project keys.</p>';
+                gallery.innerHTML = '<p style="color: var(--text-muted); width: 100%; text-align: center; grid-column: 1 / -1; font-size: 1rem;">Failed to load artworks from cloud database.</p>';
             }
         }
 
         function renderArtworksGrid(artworks) {
             const gallery = document.getElementById('publicGallery');
             gallery.innerHTML = '';
-            artworks.forEach((art, index) => {
+            artworks.forEach((art) => {
+                const artId = art.id;
+                const likeCount = art.likes || 0;
+
                 const card = document.createElement('div');
                 card.className = 'art-card ripple-element';
                 card.innerHTML = `
@@ -666,30 +767,51 @@
                     <div class="art-info">
                         <h3>${art.title}</h3>
                         <p>${art.description}</p>
-                        <div class="art-meta">
-                            <span>Art Core Studio</span>
-                            <button class="like-btn ripple-element" onclick="toggleLike(this)"><i class="fas fa-heart"></i> <span class="like-count">${12 + index}</span></button>
+                        
+                        <div class="art-actions">
+                            <button class="btn-like ripple-element" onclick="likeArtwork('${artId}')">
+                                <i class="fas fa-heart"></i> Like (<span id="likeCount_${artId}">${likeCount}</span>)
+                            </button>
+                        </div>
+
+                        <div class="comments-section">
+                            <div id="commentsList_${artId}" class="comments-list">Loading comments...</div>
+                            <div class="comment-input-row">
+                                <input type="text" id="commentInput_${artId}" placeholder="Write a comment...">
+                                <button onclick="postComment('${artId}')">Post</button>
+                            </div>
                         </div>
                     </div>
                 `;
                 gallery.appendChild(card);
+                loadComments(artId);
             });
         }
-
-        window.toggleLike = function(btn) {
-            if (isReadOnly) return;
-            const countSpan = btn.querySelector('.like-count');
-            let count = parseInt(countSpan.innerText);
-            countSpan.innerText = count + 1;
-            btn.style.color = '#ff0055';
-        };
 
         window.sortGalleryArtworks = function() {
             const sortVal = document.getElementById('gallerySort').value;
             let sorted = [...cachedArtworks];
-            if (sortVal === 'popular') { sorted.reverse(); }
+            if (sortVal === 'popular') { 
+                sorted.sort((a, b) => (b.likes || 0) - (a.likes || 0)); 
+            }
             renderArtworksGrid(sorted);
         };
+
+        // Check for Live Broadcasts
+        async function checkLiveBroadcasts() {
+            try {
+                const q = query(collection(db, "broadcasts"), orderBy("timestamp", "desc"), limit(1));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    setTimeout(() => {
+                        alert(`📢 ART CORE ANNOUNCEMENT:\n\n${data.message}`);
+                    }, 1200);
+                });
+            } catch (e) {
+                console.log("No broadcasts found:", e);
+            }
+        }
 
         window.calculateEstimate = function() {
             const basePrice = parseInt(document.getElementById('calcType').value);
