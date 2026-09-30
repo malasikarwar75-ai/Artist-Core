@@ -192,6 +192,23 @@
             border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; color: var(--text-main);
             transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
         }
+        /* Photo Zoom-In Entrance Animation */
+@keyframes zoomInEffect {
+    0% {
+        transform: scale(0.85);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.art-card {
+    animation: zoomInEffect 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform-origin: center;
+}
+        
         .art-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 15px 45px rgba(0, 210, 255, 0.3); background: var(--card-hover-bg); }
         .art-card img { width: 100%; height: 300px; object-fit: cover; border-bottom: 1px solid var(--glass-border); }
         .art-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
