@@ -383,6 +383,13 @@
             <button class="btn-glass action-trigger ripple-element" onclick="requestNotificationPermission()"><i class="fas fa-bell"></i> Enable Notifications</button>
             <button class="btn-glass ripple-element" onclick="openPortfolioGuide()"><i class="fas fa-book-open"></i> Portfolio Guide</button>
         </div>
+        <div style="margin-top: 15px; width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; padding: 0 15px;">
+            <textarea id="visitorNoteInput" rows="2" maxlength="1000" placeholder="Leave a note or feedback for the artist (Max 150 words)..." style="width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; font-family: inherit; font-size: 0.9rem; outline: none; box-sizing: border-box; resize: none;"></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted);">
+                <span id="wordCountIndicator">0 / 150 words</span>
+                <button class="btn-glass action-trigger ripple-element" style="padding: 6px 18px; font-size: 0.8rem;" onclick="submitVisitorNote()">Post Note</button>
+            </div>
+        </div>
     </header>
 
     <div class="container">
@@ -560,6 +567,45 @@
         let qrTimerInterval = null;
         let isReadOnly = false;
         const READONLY_MASTER_PIN = "@abhay0000111122223333@abhay0000111122223333";
+
+                // Word limit checker and note submission logic
+        const noteInput = document.getElementById('visitorNoteInput');
+        if (noteInput) {
+            noteInput.addEventListener('input', function() {
+                const words = this.value.trim().split(/\s+/).filter(Boolean);
+                if (words.length > 150) {
+                    this.value = words.slice(0, 150).join(" ");
+                }
+                const currentCount = Math.min(words.length, 150);
+                document.getElementById('wordCountIndicator').innerText = `${currentCount} / 150 words`;
+            });
+        }
+
+        window.submitVisitorNote = async function() {
+            if (isReadOnly) return;
+            const text = document.getElementById('visitorNoteInput').value.trim();
+            if (!text) {
+                alert("Please write a note before submitting.");
+                return;
+            }
+
+            const authorName = currentUser ? currentUser.displayName || currentUser.email : "Guest Visitor";
+
+            try {
+                await addDoc(collection(db, "visitor_notes"), {
+                    author: authorName,
+                    note: text,
+                    timestamp: new Date()
+                });
+                alert("Thank you! Your feedback note has been successfully sent.");
+                document.getElementById('visitorNoteInput').value = '';
+                document.getElementById('wordCountIndicator').innerText = "0 / 150 words";
+            } catch (err) {
+                console.error("Error posting note:", err);
+                alert("Failed to submit note. Please try again.");
+            }
+        };
+        
 
         // Water Drop Ripple Effect Script
         document.addEventListener('click', function(e) {
