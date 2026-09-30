@@ -667,20 +667,38 @@
             checkLiveBroadcasts();
         });
 
-        // Real-time Likes Function
-        window.likeArtwork = async function(artId) {
-            if (isReadOnly) return;
-            try {
-                const artRef = doc(db, "artworks", artId);
-                await updateDoc(artRef, {
-                    likes: increment(1)
-                });
-                loadPublicGallery();
-            } catch (err) {
-                console.error("Error liking artwork:", err);
-                alert("Failed to register like.");
-            }
-        };
+        // Realistic One-Time-Per-User Like Function
+window.likeArtwork = async function(artId) {
+    if (isReadOnly) return;
+
+    // Create a unique key for this artwork and user/browser session
+    const userKey = currentUser ? currentUser.uid : "guest_visitor";
+    const storageKey = `liked_${artId}_${userKey}`;
+
+    // Check if this user has already liked this artwork
+    if (localStorage.getItem(storageKey) === "true") {
+        alert("You have already liked this artwork!");
+        return;
+    }
+
+    try {
+        const artRef = doc(db, "artworks", artId);
+        await updateDoc(artRef, {
+            likes: increment(1)
+        });
+
+        // Mark as liked in local storage so they cannot like it again
+        localStorage.setItem(storageKey, "true");
+        
+        // Refresh gallery to show updated count
+        loadPublicGallery();
+        alert("Thank you! Your like has been recorded.");
+    } catch (err) {
+        console.error("Error liking artwork:", err);
+        alert("Failed to register like.");
+    }
+};
+        
 
         // Post Comment Function
         window.postComment = async function(artId) {
