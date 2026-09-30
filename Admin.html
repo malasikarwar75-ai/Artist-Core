@@ -115,6 +115,15 @@
         
         <div class="admin-grid">
 
+            <!-- LIVE NOTIFICATIONS FEED (LIKES & COMMENTS) -->
+            <div class="panel-card" style="grid-column: 1 / -1; border-color: #ff3366;">
+                <h3><i class="fas fa-bell"></i> Live Activity Notifications (Likes & Comments)</h3>
+                <p style="font-size: 0.9rem; color: var(--text-muted);">Real-time feed tracking all user engagements and interactions on your public portfolio.</p>
+                <div id="adminNotificationFeed" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
+                    <p style="color: var(--text-muted);">Listening for incoming likes and comments...</p>
+                </div>
+            </div>
+
             <!-- REAL-TIME VISITORS TRACKER -->
             <div class="panel-card" style="grid-column: 1 / -1; border-color: #00ff66;">
                 <h3><i class="fas fa-users"></i> Real-Time Live Visitors Monitor</h3>
@@ -259,7 +268,7 @@
                 <div class="control-group"><label>47. Gallery Grid Columns</label><input type="text" value="Auto-fit (minmax 280px)"></div>
                 <div class="control-group"><label>48. Testimonial Section Status</label><select><option>Enabled</option><option>Hidden</option></select></div>
                 <div class="control-group"><label>49. Newsletter Popup Collector</label><select><option>Active</option><option>Disabled</option></select></div>
-                <div class="control-group"><label>50. Master Cloud Sync Engine</label><select><option>Firebase Firestore Live</option><option>Offine Mode</option></select></div>
+                <div class="control-group"><label>50. Master Cloud Sync Engine</label><select><option>Firebase Firestore Live</option><option>Offline Mode</option></select></div>
             </div>
 
         </div>
@@ -269,7 +278,7 @@
     <!-- FIREBASE ADMIN LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAEwOg97m8CW0n5DIPc_xRG_c7Jo70RUeA",
@@ -293,10 +302,52 @@
                 alert("Master Admin Access Authorized successfully!");
                 loadAdminArtworks();
                 loadRealtimeVisitors();
+                initAdminNotifications();
             } else {
                 alert("Incorrect Admin Password! Access Denied.");
             }
         };
+
+        // Real-time Notification Feed for Likes & Comments
+        function initAdminNotifications() {
+            const feedContainer = document.getElementById('adminNotificationFeed');
+            try {
+                getDocs(collection(db, "artworks")).then((snapshot) => {
+                    feedContainer.innerHTML = '';
+                    snapshot.forEach((artDoc) => {
+                        const artData = artDoc.data();
+                        const artId = artDoc.id;
+
+                        // Listen to comments subcollection
+                        onSnapshot(collection(db, `artworks/${artId}/comments`), (commentSnapshot) => {
+                            commentSnapshot.docChanges().forEach((change) => {
+                                if (change.type === "added") {
+                                    const comment = change.doc.data();
+                                    appendNotification(feedContainer, `💬 <strong>${comment.author}</strong> commented on "<em>${artData.title || 'Artwork'}</em>": "${comment.text}"`);
+                                }
+                            });
+                        });
+                    });
+                });
+            } catch (err) {
+                console.error("Error setting up notification listeners:", err);
+            }
+        }
+
+        function appendNotification(container, htmlText) {
+            if (container.querySelector('p')) {
+                container.innerHTML = '';
+            }
+            const div = document.createElement('div');
+            div.style.background = 'rgba(0,0,0,0.5)';
+            div.style.padding = '10px 14px';
+            div.style.borderRadius = '8px';
+            div.style.borderLeft = '3px solid #ff3366';
+            div.style.fontSize = '0.85rem';
+            div.style.color = '#fff';
+            div.innerHTML = `${htmlText} <span style="font-size: 0.7rem; color: var(--text-muted); float: right;">Just now</span>`;
+            container.prepend(div);
+        }
 
         // Load Real-time Visitors from Firestore
         async function loadRealtimeVisitors() {
@@ -391,6 +442,7 @@
                         title: title,
                         description: description || "Master Fine Art Creation",
                         image: base64Image,
+                        likes: 0,
                         createdAt: new Date()
                     });
                     alert("Success! Image uploaded and published live.");
