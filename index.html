@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ART CORE | Elite Professional Master Fine Arts Portfolio</title>
-    <!-- Typography and Icons -->
+    <!-- Cloudflare CDN hosted Typography and Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     
     <style>
         html { scroll-behavior: smooth; }
@@ -51,13 +51,13 @@
         .bg-animation {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1; overflow: hidden; background-color: #04020f;
-            transition: background 0.4s ease;
+            transition: background 0.4s ease; will-change: transform;
         }
         [data-theme="light"] .bg-animation { background-color: #e2e6f0; }
 
         .blob {
             position: absolute; filter: blur(120px); opacity: 0.55; border-radius: 50%;
-            animation: float 25s infinite ease-in-out alternate;
+            animation: float 25s infinite ease-in-out alternate; will-change: transform;
         }
         .blob-white { width: 400px; height: 400px; background: rgba(255, 255, 255, 0.4); top: 5%; left: 10%; animation-delay: -2s; }
         .blob-blue { width: 550px; height: 550px; background: #0044ff; bottom: -10%; right: -5%; animation-delay: -4s; }
@@ -74,7 +74,8 @@
             66% { transform: translate(-10vw, 10vh) scale(0.88); }
             100% { transform: translate(6vw, -10vh) scale(1.05); }
         }
-                /* VIP Gold Sparkle / Neon Pulse Background Effect */
+
+        /* VIP Gold Sparkle / Neon Pulse Background Effect */
         body.vip-active .bg-animation {
             filter: hue-rotate(90deg) saturate(180%);
             animation: vipGlowPulse 4s infinite alternate;
@@ -89,41 +90,45 @@
             display: none; position: fixed; bottom: 85px; right: 20px;
             background: rgba(15, 15, 25, 0.95); backdrop-filter: blur(25px);
             border: 2px solid var(--accent); border-radius: 16px; padding: 20px;
-            z-index: 1500; width: 280px; box-shadow: 0 10px 40px rgba(0,229,255,0.4);
+            z-index: 3500; width: 280px; box-shadow: 0 10px 40px rgba(0,229,255,0.4);
             box-sizing: border-box; text-align: left;
         }
         #vipCustomizerPanel h4 { margin: 0 0 12px 0; font-family: 'Cinzel', serif; color: var(--accent); font-size: 1.1rem; }
         .customizer-row { margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px; font-size: 0.85rem; color: var(--text-muted); }
         .customizer-row input, .customizer-row select { padding: 6px; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); border-radius: 6px; color: #fff; outline: none; font-family: inherit; }
-        
+
+        /* Floating Written Status Message */
+        #statusMessageBadge {
+            position: fixed; bottom: 20px; left: 20px; z-index: 3100;
+            background: rgba(15, 15, 25, 0.92); backdrop-filter: blur(15px);
+            border: 2px solid var(--accent); border-radius: 30px; padding: 10px 20px;
+            display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(0,229,255,0.4);
+            font-size: 0.85rem; color: #fff; font-weight: 500; max-width: 280px; box-sizing: border-box;
+            transition: transform 0.3s ease, border-color 0.3s ease; animation: badgePulse 3s infinite ease-in-out alternate;
+        }
+        @keyframes badgePulse {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-4px); }
+        }
+        #statusMessageBadge.active-glow {
+            border-color: #ff00ff; box-shadow: 0 0 35px rgba(255,0,255,0.6);
+        }
+
         /* Water Drop Ripple Effect Style */
-        .ripple-element {
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
+        .ripple-element { position: relative; overflow: hidden; cursor: pointer; }
         .water-ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(0, 229, 255, 0.4);
-            transform: scale(0);
-            animation: waterDrop 0.6s linear;
-            pointer-events: none;
+            position: absolute; border-radius: 50%; background: rgba(0, 229, 255, 0.4);
+            transform: scale(0); animation: waterDrop 0.6s linear; pointer-events: none;
         }
-        @keyframes waterDrop {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
+        @keyframes waterDrop { to { transform: scale(4); opacity: 0; } }
 
         a { color: var(--text-main); text-decoration: none; transition: color 0.3s ease; }
         a:hover { color: var(--accent); }
 
-                /* Full-Screen Lightbox Modal */
+        /* Full-Screen Lightbox Modal */
         #lightboxModal {
             display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(2, 1, 8, 0.92); z-index: 3000; justify-content: center; align-items: center;
+            background: rgba(2, 1, 8, 0.92); z-index: 4000; justify-content: center; align-items: center;
             backdrop-filter: blur(15px); padding: 20px; box-sizing: border-box; overflow-y: auto;
         }
         .lightbox-content {
@@ -133,7 +138,7 @@
         }
         .lightbox-content img { width: 100%; max-height: 500px; object-fit: contain; border-radius: 12px; background: #000; }
         .lightbox-close { position: absolute; top: 15px; right: 20px; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
-        
+
         /* Utility Bar */
         .utility-bar {
             width: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(12px);
@@ -155,8 +160,7 @@
             margin: 0; font-family: 'Cinzel', serif; font-size: clamp(2.5rem, 6vw, 4.8rem); letter-spacing: clamp(4px, 2vw, 14px); font-weight: 900;
             text-transform: uppercase; background: linear-gradient(45deg, #00d2ff, #9400d3, #ff00ff, #ffbb00);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0px 4px 25px rgba(148, 0, 211, 0.4);
-            word-break: break-word;
+            text-shadow: 0px 4px 25px rgba(148, 0, 211, 0.4); word-break: break-word;
         }
         header p { color: var(--text-muted); font-size: clamp(0.9rem, 2vw, 1.15rem); letter-spacing: 3px; margin: 0; text-transform: uppercase; font-weight: 300; }
 
@@ -192,62 +196,40 @@
         .vip-benefits { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin: 25px 0; text-align: left; }
         .vip-perk { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border); color: var(--text-main); font-size: 0.95rem; }
         .vip-perk i { color: var(--accent); margin-right: 8px; }
+        
+        /* Animated Subscription Button with Push Animation */
         .subscribe-btn {
             background: linear-gradient(45deg, #00e5ff, #9400d3); color: #fff; border: none;
             padding: 14px 30px; font-size: 1rem; font-weight: bold; border-radius: 30px; cursor: pointer;
-            text-transform: uppercase; letter-spacing: 2px; transition: transform 0.2s, box-shadow 0.2s;
-            width: 100%; max-width: 350px;
+            text-transform: uppercase; letter-spacing: 2px; transition: transform 0.15s ease, box-shadow 0.15s ease;
+            width: 100%; max-width: 350px; will-change: transform;
         }
         .subscribe-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 229, 255, 0.6); }
+        .subscribe-btn:active { transform: scale(0.92) translateY(2px) !important; box-shadow: 0 2px 10px rgba(0,229,255,0.8); }
 
         /* Gallery Controls & Grid */
         .gallery-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
         .filter-select {
-            background: rgba(15, 15, 25, 0.85); 
-            border: 1px solid var(--accent); 
-            padding: 10px 15px;
-            border-radius: 10px; 
-            color: var(--text-main); 
-            font-family: inherit; 
-            outline: none; 
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.15);
-            transition: all 0.3s ease;
+            background: rgba(15, 15, 25, 0.85); border: 1px solid var(--accent); padding: 10px 15px;
+            border-radius: 10px; color: var(--text-main); font-family: inherit; outline: none; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.15); transition: all 0.3s ease;
         }
-        .filter-select:hover, .filter-select:focus {
-            border-color: #00ffff;
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
-            background: rgba(20, 20, 35, 0.95);
-        }
+        .filter-select:hover, .filter-select:focus { border-color: #00ffff; box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); background: rgba(20, 20, 35, 0.95); }
         .filter-select option { background-color: #12121c; color: #ffffff; padding: 10px; }
 
         .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        
+        /* Photo Zoom-In Entrance Animation */
+        @keyframes zoomInEffect {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
         .art-card {
             background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--glass-border);
             border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; color: var(--text-main);
             transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+            animation: zoomInEffect 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; transform-origin: center; will-change: transform, opacity;
         }
-        /* Photo Zoom-In Entrance Animation */
-@keyframes zoomInEffect {
-    0% {
-        transform: scale(0.30);
-        opacity: 0;
-    }
-    50% {
-        transform: scale(0.70)
-        opacity: 1;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 2;
-    }
-}
-
-.art-card {
-    animation: zoomInEffect 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    transform-origin: center;
-}
-        
         .art-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 15px 45px rgba(0, 210, 255, 0.3); background: var(--card-hover-bg); }
         .art-card img { width: 100%; height: 300px; object-fit: cover; border-bottom: 1px solid var(--glass-border); }
         .art-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
@@ -333,7 +315,7 @@
             position: fixed; bottom: 20px; right: 20px; background: linear-gradient(45deg, #25d366, #128c7e);
             color: #fff; padding: 12px 22px; border-radius: 50px; font-weight: 600; font-size: 0.85rem;
             text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 20px rgba(37, 211, 102, 0.6);
-            z-index: 1000; display: flex; align-items: center; gap: 8px; text-decoration: none;
+            z-index: 3000; display: flex; align-items: center; gap: 8px; text-decoration: none;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .floating-contact:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(37, 211, 102, 0.8); color: #fff; }
@@ -341,19 +323,19 @@
         /* Read-Only Mode Banner Indicator */
         #readonlyBanner {
             display: none; width: 100%; background: linear-gradient(90deg, #ff9900, #ff3300); color: #fff;
-            text-align: center; padding: 8px; font-weight: bold; font-size: 0.85rem; letter-spacing: 1px; z-index: 105;
+            text-align: center; padding: 8px; font-weight: bold; font-size: 0.85rem; letter-spacing: 1px; z-index: 350;
         }
 
         /* Modals */
         .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(8px); padding: 15px; box-sizing: border-box;
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85); z-index: 5000; align-items: center; justify-content: center; backdrop-filter: blur(8px); padding: 15px; box-sizing: border-box;
         }
         .modal-content {
             background: var(--glass-bg); backdrop-filter: blur(30px); padding: 30px 20px;
             border-radius: 18px; width: 100%; max-width: 420px; border: 1px solid var(--accent);
             box-shadow: 0 15px 40px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; text-align: center;
-            max-height: 90vh; overflow-y: auto;
+            max-height: 90vh; overflow-y: auto; z-index: 5050;
         }
         .modal-content h3 { margin: 0; font-family: 'Cinzel', serif; color: var(--accent); font-size: 1.5rem; }
         .modal-content p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
@@ -409,6 +391,12 @@
         <div class="blob blob-violet"></div>
     </div>
 
+    <!-- Floating Written Status Message Badge -->
+    <div id="statusMessageBadge">
+        <i class="fas fa-sparkles" style="color: var(--accent);"></i>
+        <span id="statusBadgeText">Welcome to Art Core Studio!</span>
+    </div>
+
     <header>
         <h1>ART CORE</h1>
         <p>Elite Fine Arts & Bespoke Sketching Portfolio</p>
@@ -449,13 +437,13 @@
                 <div class="vip-perk"><i class="fas fa-images"></i><strong>Wallpapers:</strong> Free high-res fine art downloads.</div>
                 <div class="vip-perk"><i class="fas fa-star"></i><strong>Early Access:</strong> First look on new gallery pieces.</div>
             </div>
-            <button class="subscribe-btn action-trigger ripple-element" onclick="openSubscriptionModal()">Join 1-Year VIP Club — INR 250</button>
+            <button class="subscribe-btn action-trigger ripple-element" onclick="triggerStatusExcitement(); openSubscriptionModal();">Join 1-Year VIP Club — INR 250</button>
         </div>
 
         <!-- GALLERY CONTROLS -->
         <div class="gallery-controls">
             <h3 style="font-family: 'Cinzel', serif; margin: 0; font-size: 1.4rem; color: var(--text-main);">Live Cloud Gallery</h3>
-            <select id="gallerySort" class="filter-select ripple-element" onchange="sortGalleryArtworks()">
+            <select id="gallerySort" class="filter-select ripple-element" onchange="triggerStatusExcitement(); sortGalleryArtworks();">
                 <option value="newest">Sort: Newest</option>
                 <option value="popular">Sort: Most Liked</option>
             </select>
@@ -566,8 +554,8 @@
         </div>
     </div>
 
-        <!-- VIP Subscriber Floating Appearance Customizer Button & Panel -->
-    <div id="vipFloatingTrigger" style="display: none; position: fixed; bottom: 20px; left: 20px; z-index: 1000;">
+    <!-- VIP Subscriber Floating Appearance Customizer Button & Panel -->
+    <div id="vipFloatingTrigger" style="display: none; position: fixed; bottom: 20px; left: 20px; z-index: 2000;">
         <button class="btn-glass ripple-element" style="background: linear-gradient(45deg, #ffbb00, #ff007f); color: #fff; border: none; font-weight: bold; box-shadow: 0 4px 20px rgba(255,187,0,0.5);" onclick="toggleVipCustomizer()">
             <i class="fas fa-crown"></i> VIP Appearance Customizer
         </button>
@@ -590,7 +578,7 @@
         <button class="btn-secondary ripple-element" style="width: 100%; margin-top: 5px; font-size: 0.8rem;" onclick="toggleVipCustomizer()">Close Panel</button>
     </div>
 
-        <!-- Full-Screen Lightbox Modal -->
+    <!-- Full-Screen Lightbox Modal -->
     <div id="lightboxModal" class="modal-overlay">
         <div class="lightbox-content">
             <button class="lightbox-close ripple-element" onclick="closeLightbox()">&times;</button>
@@ -653,7 +641,23 @@
         let isReadOnly = false;
         const READONLY_MASTER_PIN = "@abhay0000111122223333@abhay0000111122223333";
 
-                // Word limit checker and note submission logic
+        // Status Badge Reactions
+        window.triggerStatusExcitement = function() {
+            const badge = document.getElementById('statusMessageBadge');
+            const text = document.getElementById('statusBadgeText');
+
+            if (badge && text) {
+                badge.classList.add('active-glow');
+                text.innerText = "Woohoo! VIP Club unlocked!";
+
+                setTimeout(() => {
+                    badge.classList.remove('active-glow');
+                    text.innerText = "Art Core Studio is live!";
+                }, 3500);
+            }
+        };
+
+        // Word limit checker and note submission logic
         const noteInput = document.getElementById('visitorNoteInput');
         if (noteInput) {
             noteInput.addEventListener('input', function() {
@@ -662,7 +666,8 @@
                     this.value = words.slice(0, 150).join(" ");
                 }
                 const currentCount = Math.min(words.length, 150);
-                document.getElementById('wordCountIndicator').innerText = `${currentCount} / 150 words`;
+                const indicator = document.getElementById('wordCountIndicator');
+                if (indicator) indicator.innerText = `${currentCount} / 150 words`;
             });
         }
 
@@ -684,14 +689,15 @@
                 });
                 alert("Thank you! Your feedback note has been successfully sent.");
                 document.getElementById('visitorNoteInput').value = '';
-                document.getElementById('wordCountIndicator').innerText = "0 / 150 words";
+                const indicator = document.getElementById('wordCountIndicator');
+                if (indicator) indicator.innerText = "0 / 150 words";
             } catch (err) {
                 console.error("Error posting note:", err);
                 alert("Failed to submit note. Please try again.");
             }
         };
 
-                let currentLightboxArtId = null;
+        let currentLightboxArtId = null;
 
         window.openLightbox = function(artId, imgUrl, title, desc) {
             currentLightboxArtId = artId;
@@ -699,16 +705,12 @@
             document.getElementById('lightboxTitle').innerText = decodeURIComponent(title);
             document.getElementById('lightboxDesc').innerText = decodeURIComponent(desc);
             
-            // Sync like button action
             const likeBtn = document.getElementById('lightboxLikeBtn');
             likeBtn.onclick = () => likeArtwork(artId);
             
-            // Sync comment post action
             const postBtn = document.getElementById('lightboxPostCommentBtn');
             postBtn.onclick = () => {
-                // temporarily map input id for comment submission
                 const input = document.getElementById('lightboxCommentInput');
-                // route to main comment logic
                 postCommentLightbox(artId, input);
             };
 
@@ -773,27 +775,36 @@
                 alert("Portfolio link copied to clipboard!");
             }
         };
+
+        window.shareSpecificArtwork = function(title) {
+            const shareText = `Check out "${decodeURIComponent(title)}" on Art Core Fine Arts Portfolio!`;
+            if (navigator.share) {
+                navigator.share({ title: decodeURIComponent(title), text: shareText, url: window.location.href }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert("Artwork link copied to clipboard!");
+            }
+        };
         
-                // Redirect to WhatsApp with pre-written message for a specific artwork
         window.orderSimilarSketch = function(artTitle) {
             if (isReadOnly) return;
             const decodedTitle = decodeURIComponent(artTitle);
             const message = encodeURIComponent(`Hi Art Core, I saw your artwork titled "${decodedTitle}" and I would like to get a custom sketch made similar to this.`);
             window.open(`https://wa.me/919306882926?text=${message}`, '_blank');
         };
-                // Check VIP Status and activate special background effects & customizer button
+
         function checkVipSubscriberStatus() {
-            // Check if user has active VIP status stored in localStorage (or via payment verification)
             const isVip = localStorage.getItem("artcore_vip_member") === "true";
             if (isVip) {
                 document.body.classList.add('vip-active');
-                document.getElementById('vipFloatingTrigger').style.display = 'block';
+                const trigger = document.getElementById('vipFloatingTrigger');
+                if (trigger) trigger.style.display = 'block';
             }
         }
 
         window.toggleVipCustomizer = function() {
             const panel = document.getElementById('vipCustomizerPanel');
-            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            if (panel) panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
         };
 
         window.applyVipCustomization = function() {
@@ -803,17 +814,16 @@
             document.documentElement.style.setProperty('--accent', glowColor);
             
             const bgAnimation = document.querySelector('.bg-animation');
-            if (bgStyle === 'gold') {
-                bgAnimation.style.filter = 'sepia(1) hue-rotate(10deg) saturate(300%)';
-            } else if (bgStyle === 'deepdark') {
-                bgAnimation.style.filter = 'brightness(30%) grayscale(80%)';
-            } else {
-                bgAnimation.style.filter = 'none';
+            if (bgAnimation) {
+                if (bgStyle === 'gold') {
+                    bgAnimation.style.filter = 'sepia(1) hue-rotate(10deg) saturate(300%)';
+                } else if (bgStyle === 'deepdark') {
+                    bgAnimation.style.filter = 'brightness(30%) grayscale(80%)';
+                } else {
+                    bgAnimation.style.filter = 'none';
+                }
             }
         };
-
-        // Call checkVipSubscriberStatus() inside your DOMContentLoaded event listener
-        
 
         // Water Drop Ripple Effect Script
         document.addEventListener('click', function(e) {
@@ -833,15 +843,14 @@
             }
         });
 
-        // Auth state observer & visitor logging
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             const authBtnText = document.getElementById('authButtonText');
             const statusEl = document.getElementById('userAuthStatus');
 
             if (user) {
-                authBtnText.innerText = `Sign Out (${user.displayName || user.email.split('@')[0]})`;
-                statusEl.innerHTML = `<i class="fas fa-user-check" style="color: #00ff66;"></i> ${user.email}`;
+                if (authBtnText) authBtnText.innerText = `Sign Out (${user.displayName || user.email.split('@')[0]})`;
+                if (statusEl) statusEl.innerHTML = `<i class="fas fa-user-check" style="color: #00ff66;"></i> ${user.email}`;
                 try {
                     await addDoc(collection(db, "visitors"), {
                         email: user.email,
@@ -850,8 +859,8 @@
                     });
                 } catch(e) { console.error("Visitor logging error:", e); }
             } else {
-                authBtnText.innerText = "Google Sign In / Up";
-                statusEl.innerHTML = `<i class="fas fa-user-circle"></i> Guest Visitor`;
+                if (authBtnText) authBtnText.innerText = "Google Sign In / Up";
+                if (statusEl) statusEl.innerHTML = `<i class="fas fa-user-circle"></i> Guest Visitor`;
             }
         });
 
@@ -870,22 +879,17 @@
             const actionTriggers = document.querySelectorAll('.action-trigger');
 
             if (isReadOnly) {
-                banner.style.display = 'block';
-                icon.className = 'fas fa-lock-open';
-                text.innerText = 'Exit Read-Only';
-                actionTriggers.forEach(el => {
-                    el.style.opacity = '0.5';
-                    el.style.pointerEvents = 'none';
-                });
+                if (banner) banner.style.display = 'block';
+                if (icon) icon.className = 'fas fa-lock-open';
+                
+                if (text) text.innerText = 'Exit Read-Only';
+                actionTriggers.forEach(el => { el.style.opacity = '0.5'; el.style.pointerEvents = 'none'; });
                 alert("Read-Only Mode enabled. Interactive buttons and transactions are locked.");
             } else {
-                banner.style.display = 'none';
-                icon.className = 'fas fa-eye';
-                text.innerText = 'Read-Only Mode';
-                actionTriggers.forEach(el => {
-                    el.style.opacity = '1';
-                    el.style.pointerEvents = 'auto';
-                });
+                if (banner) banner.style.display = 'none';
+                if (icon) icon.className = 'fas fa-eye';
+                if (text) text.innerText = 'Read-Only Mode';
+                actionTriggers.forEach(el => { el.style.opacity = '1'; el.style.pointerEvents = 'auto'; });
                 alert("Read-Only Mode disabled. Full interactivity restored.");
             }
         };
@@ -893,115 +897,77 @@
         window.handleGoogleAuth = async function() {
             if (isReadOnly) return;
             if (currentUser) {
-                try {
-                    await signOut(auth);
-                    alert("You have been signed out successfully.");
-                } catch (error) {
-                    console.error("Sign out error:", error);
-                }
+                try { await signOut(auth); alert("You have been signed out successfully."); } catch (error) { console.error("Sign out error:", error); }
                 return;
             }
-
+            
+            
             const provider = new GoogleAuthProvider();
             try {
                 const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-                alert(`Welcome, ${user.displayName || user.email}! You are successfully signed in with your Google ID.`);
+                alert(`Welcome, ${result.user.displayName || result.user.email}! Signed in successfully.`);
             } catch (error) {
                 console.error("Authentication Error: ", error);
-                alert("Google Sign-In failed. Please check popup blockers or configuration credentials.");
+                alert("Google Sign-In failed.");
             }
         };
 
         window.requestNotificationPermission = async function() {
             if (isReadOnly) return;
-            if (!("Notification" in window)) {
-                alert("This browser does not support desktop notifications.");
-                return;
-            }
+            if (!("Notification" in window)) return;
             try {
                 const permission = await Notification.requestPermission();
                 if (permission === "granted") {
-                    new Notification("Art Core Notifications Enabled", {
-                        body: "Thank you! You will now receive instant alerts regarding newly added master art pieces.",
-                        icon: "https://via.placeholder.com/128"
-                    });
                     alert("Notifications successfully enabled!");
-                } else {
-                    alert("Notification permission was denied.");
                 }
-            } catch (err) {
-                console.error("Notification error:", err);
-                alert("Could not enable notifications automatically.");
-            }
+            } catch (err) { console.error("Notification error:", err); }
         };
 
         window.addEventListener('DOMContentLoaded', () => {
             loadPublicGallery();
             checkLiveBroadcasts();
+            checkVipSubscriberStatus();
         });
 
-        // Realistic One-Time-Per-User Like Function
-window.likeArtwork = async function(artId) {
-    if (isReadOnly) return;
-
-    // Create a unique key for this artwork and user/browser session
-    const userKey = currentUser ? currentUser.uid : "guest_visitor";
-    const storageKey = `liked_${artId}_${userKey}`;
-
-    // Check if this user has already liked this artwork
-    if (localStorage.getItem(storageKey) === "true") {
-        alert("You have already liked this artwork!");
-        return;
-    }
-
-    try {
-        const artRef = doc(db, "artworks", artId);
-        await updateDoc(artRef, {
-            likes: increment(1)
-        });
-
-        // Mark as liked in local storage so they cannot like it again
-        localStorage.setItem(storageKey, "true");
-        
-        // Refresh gallery to show updated count
-        loadPublicGallery();
-        alert("Thank you! Your like has been recorded.");
-    } catch (err) {
-        console.error("Error liking artwork:", err);
-        alert("Failed to register like.");
-    }
-};
-        
-
-        // Post Comment Function
-        window.postComment = async function(artId) {
+        window.likeArtwork = async function(artId) {
             if (isReadOnly) return;
-            const inputEl = document.getElementById(`commentInput_${artId}`);
-            const commentText = inputEl.value.trim();
+            const userKey = currentUser ? currentUser.uid : "guest_visitor";
+            const storageKey = `liked_${artId}_${userKey}`;
 
-            if (!commentText) {
-                alert("Please type a comment before posting.");
+            if (localStorage.getItem(storageKey) === "true") {
+                alert("You have already liked this artwork!");
                 return;
             }
 
+            try {
+                const artRef = doc(db, "artworks", artId);
+                await updateDoc(artRef, { likes: increment(1) });
+                localStorage.setItem(storageKey, "true");
+                loadPublicGallery();
+                alert("Thank you! Your like has been recorded.");
+            } catch (err) {
+                console.error("Error liking artwork:", err);
+            }
+        };
+
+        window.postComment = async function(artId) {
+            if (isReadOnly) return;
+            const inputEl = document.getElementById(`commentInput_${artId}`);
+            if (!inputEl) return;
+            const commentText = inputEl.value.trim();
+
+            if (!commentText) return;
             const authorName = currentUser ? currentUser.displayName || currentUser.email : "Guest Visitor";
 
             try {
                 await addDoc(collection(db, `artworks/${artId}/comments`), {
-                    author: authorName,
-                    text: commentText,
-                    timestamp: new Date()
+                    author: authorName, text: commentText, timestamp: new Date()
                 });
                 inputEl.value = '';
                 loadComments(artId);
-            } catch (err) {
-                console.error("Error posting comment:", err);
-                alert("Failed to post comment.");
-            }
+            } catch (err) { console.error("Error posting comment:", err); }
         };
 
-        // Load Comments for an Artwork
         async function loadComments(artId) {
             const listContainer = document.getElementById(`commentsList_${artId}`);
             if (!listContainer) return;
@@ -1021,13 +987,12 @@ window.likeArtwork = async function(artId) {
                     item.innerHTML = `<strong>${c.author}:</strong> ${c.text}`;
                     listContainer.appendChild(item);
                 });
-            } catch (err) {
-                console.error("Error loading comments:", err);
-            }
+            } catch (err) { console.error("Error loading comments:", err); }
         }
 
         async function loadPublicGallery() {
             const gallery = document.getElementById('publicGallery');
+            if (!gallery) return;
             try {
                 const querySnapshot = await getDocs(collection(db, "artworks"));
                 if (querySnapshot.empty) {
@@ -1041,21 +1006,13 @@ window.likeArtwork = async function(artId) {
                 renderArtworksGrid(cachedArtworks);
             } catch (error) {
                 console.error("Error loading artworks: ", error);
-                gallery.innerHTML = '<p style="color: var(--text-muted); width: 100%; text-align: center; grid-column: 1 / -1; font-size: 1rem;">Failed to load artworks from cloud database.</p>';
+                gallery.innerHTML = '<p style="color: #ff3333; width: 100%; text-align: center; grid-column: 1 / -1; font-size: 1rem;">Failed to load cloud gallery. Please check connection.</p>';
             }
         }
 
-        
-
-                        <div class="comments-section">
-                            <div id="commentsList_${artId}" class="comments-list">Loading comments...</div>
-                            <div class="comment-input-row">
-                                <input type="text" id="commentInput_${artId}" placeholder="Write a comment...">
-                                <button onclick="postComment('${artId}')">Post</button>
-                            </div>
-                        </div>
         function renderArtworksGrid(artworks) {
             const gallery = document.getElementById('publicGallery');
+            if (!gallery) return;
             gallery.innerHTML = '';
             artworks.forEach((art) => {
                 const artId = art.id;
@@ -1073,6 +1030,9 @@ window.likeArtwork = async function(artId) {
                             <button class="btn-like ripple-element" onclick="likeArtwork('${artId}')">
                                 <i class="fas fa-heart"></i> Like (<span id="likeCount_${artId}">${likeCount}</span>)
                             </button>
+                            <button class="btn-glass ripple-element" style="padding: 6px 12px; font-size: 0.8rem;" onclick="shareSpecificArtwork('${encodeURIComponent(art.title)}')">
+                                <i class="fas fa-share-alt"></i> Share
+                            </button>
                         </div>
 
                         <div class="comments-section">
@@ -1083,14 +1043,6 @@ window.likeArtwork = async function(artId) {
                             </div>
                         </div>
 
-                        <!-- Make your sketch like this button -->
-                        <button class="btn-done action-trigger ripple-element" style="margin-top: 15px; width: 100%; font-size: 0.85rem; padding: 10px;" onclick="orderSimilarSketch('${encodeURIComponent(art.title)}')">
-                            <i class="fab fa-whatsapp"></i> Make your sketch like this
-                        </button>
-                    </div>
-                `;
-        
-                        <!-- NEW: Make your sketch like this button -->
                         <button class="btn-done action-trigger ripple-element" style="margin-top: 15px; width: 100%; font-size: 0.85rem; padding: 10px;" onclick="orderSimilarSketch('${encodeURIComponent(art.title)}')">
                             <i class="fab fa-whatsapp"></i> Make your sketch like this
                         </button>
@@ -1110,7 +1062,6 @@ window.likeArtwork = async function(artId) {
             renderArtworksGrid(sorted);
         };
 
-        // Check for Live Broadcasts
         async function checkLiveBroadcasts() {
             try {
                 const q = query(collection(db, "broadcasts"), orderBy("timestamp", "desc"), limit(1));
@@ -1121,27 +1072,24 @@ window.likeArtwork = async function(artId) {
                         alert(`📢 ART CORE SAYS:\n\n${data.message}`);
                     }, 1200);
                 });
-            } catch (e) {
-                console.log("No broadcasts found:", e);
-            }
+            } catch (e) { console.log("No broadcasts found:", e); }
         }
 
         window.calculateEstimate = function() {
             const basePrice = parseInt(document.getElementById('calcType').value);
             const multiplier = parseFloat(document.getElementById('calcSize').value);
             const total = Math.round(basePrice * multiplier);
-            document.getElementById('calcResultOutput').innerText = `Estimated Investment: INR ${total}`;
+            const output = document.getElementById('calcResultOutput');
+            if (output) output.innerText = `Estimated Investment: INR ${total}`;
         };
 
         window.sendEstimatorToWhatsApp = function() {
             if (isReadOnly) return;
             const typeSelect = document.getElementById('calcType');
             const sizeSelect = document.getElementById('calcSize');
-            
             const typeText = typeSelect.options[typeSelect.selectedIndex].text;
             const sizeText = sizeSelect.options[sizeSelect.selectedIndex].text;
             const estimateText = document.getElementById('calcResultOutput').innerText;
-
             const message = encodeURIComponent(`Hi Art Core, I estimated a commission:\n- Type: ${typeText}\n- Size: ${sizeText}\n- ${estimateText}\n\nMy Name: `);
             window.open(`https://wa.me/919306882926?text=${message}`, '_blank');
         };
@@ -1151,34 +1099,38 @@ window.likeArtwork = async function(artId) {
             const current = body.getAttribute('data-theme');
             if (current === 'dark') {
                 body.setAttribute('data-theme', 'light');
-                document.getElementById('themeIcon').className = 'fas fa-moon';
+                const icon = document.getElementById('themeIcon');
+                if (icon) icon.className = 'fas fa-moon';
             } else {
                 body.setAttribute('data-theme', 'dark');
-                document.getElementById('themeIcon').className = 'fas fa-adjust';
+                const icon = document.getElementById('themeIcon');
+                if (icon) icon.className = 'fas fa-adjust';
             }
         };
 
-        window.openNewsletterModal = function() { document.getElementById('newsletterModal').style.display = 'flex'; };
-        window.closeNewsletterModal = function() { document.getElementById('newsletterModal').style.display = 'none'; };
+        window.openNewsletterModal = function() { const m = document.getElementById('newsletterModal'); if (m) m.style.display = 'flex'; };
+        window.closeNewsletterModal = function() { const m = document.getElementById('newsletterModal'); if (m) m.style.display = 'none'; };
         window.submitNewsletter = function() {
             if (isReadOnly) return;
             const email = document.getElementById('subscriberEmail').value;
             if (email) {
                 alert(`Thank you for subscribing, ${email}! You are now on the VIP list.`);
                 closeNewsletterModal();
-            } else {
-                alert('Please enter a valid email address.');
-            }
+            } else { alert('Please enter a valid email address.'); }
         };
 
         window.openSubscriptionModal = function() { 
             if (isReadOnly) return;
-            document.getElementById('subscriptionModal').style.display = 'flex'; 
+            const modal = document.getElementById('subscriptionModal');
+            if (modal) modal.style.display = 'flex'; 
             
             const upiString = `upi://pay?pa=9306882926@ptyes&pn=ArtCore&am=250.00&cu=INR&tn=VIPClub1YearSubscription`;
             const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiString)}`;
-            document.getElementById('upiQrImg').src = qrApiUrl;
-            document.getElementById('upiQrImg').style.opacity = "1";
+            const qrImg = document.getElementById('upiQrImg');
+            if (qrImg) {
+                qrImg.src = qrApiUrl;
+                qrImg.style.opacity = "1";
+            }
 
             let timeLeft = 60;
             const timerDisplay = document.getElementById('timerDisplay');
@@ -1188,25 +1140,25 @@ window.likeArtwork = async function(artId) {
                 timeLeft--;
                 let minutes = Math.floor(timeLeft / 60);
                 let seconds = timeLeft % 60;
-                timerDisplay.innerText = `Expires in: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                if (timerDisplay) timerDisplay.innerText = `Expires in: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
                 
                 if (timeLeft <= 0) {
                     clearInterval(qrTimerInterval);
-                    timerDisplay.innerText = "QR Code Expired!";
-                    document.getElementById('upiQrImg').style.opacity = "0.3";
+                    if (timerDisplay) timerDisplay.innerText = "QR Code Expired!";
+                    if (qrImg) qrImg.style.opacity = "0.3";
                 }
             }, 1000);
         };
 
         window.closeSubscriptionModal = function() { 
-            document.getElementById('subscriptionModal').style.display = 'none';
+            const modal = document.getElementById('subscriptionModal');
+            if (modal) modal.style.display = 'none';
             if (qrTimerInterval) clearInterval(qrTimerInterval);
         };
 
         window.payViaUniversalUPI = function() {
             if (isReadOnly) return;
-            const upiUrl = `upi://pay?pa=9306882926@ptyes&pn=ArtCore&am=250.00&cu=INR&tn=VIPClub1YearSubscription`;
-            window.location.href = upiUrl;
+            window.location.href = `upi://pay?pa=9306882926@ptyes&pn=ArtCore&am=250.00&cu=INR&tn=VIPClub1YearSubscription`;
         };
 
         window.openPortfolioGuide = function() {
