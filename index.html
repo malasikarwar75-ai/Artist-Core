@@ -1089,10 +1089,6 @@ window.likeArtwork = async function(artId) {
                         </button>
                     </div>
                 `;
-                gallery.appendChild(card);
-                loadComments(artId);
-            });
-                            }
         
                         <!-- NEW: Make your sketch like this button -->
                         <button class="btn-done action-trigger ripple-element" style="margin-top: 15px; width: 100%; font-size: 0.85rem; padding: 10px;" onclick="orderSimilarSketch('${encodeURIComponent(art.title)}')">
