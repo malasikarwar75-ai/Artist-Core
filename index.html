@@ -440,6 +440,14 @@
             <button class="subscribe-btn action-trigger ripple-element" onclick="triggerStatusExcitement(); openSubscriptionModal();">Join 1-Year VIP Club — INR 250</button>
         </div>
 
+         <!-- Keyword Search Bar -->
+        <div style="margin-bottom: 20px; width: 100%; display: flex; justify-content: center;">
+            <div style="position: relative; width: 100%; max-width: 450px;">
+                <input type="text" id="gallerySearchInput" placeholder="Search artworks by title, medium, or description..." oninput="filterArtworksByKeyword()" style="width: 100%; padding: 12px 20px 12px 42px; background: rgba(15, 15, 25, 0.85); border: 1px solid var(--accent); border-radius: 12px; color: var(--text-main); font-family: inherit; outline: none; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0, 229, 255, 0.15);">
+                <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--accent);"></i>
+            </div>
+        </div>
+        
         <!-- GALLERY CONTROLS -->
         <div class="gallery-controls">
             <h3 style="font-family: 'Cinzel', serif; margin: 0; font-size: 1.4rem; color: var(--text-main);">Live Cloud Gallery</h3>
@@ -657,6 +665,24 @@
             }
         };
 
+                // Keyword Search & Filter Logic
+        window.filterArtworksByKeyword = function() {
+            const queryText = document.getElementById('gallerySearchInput').value.toLowerCase().trim();
+            
+            if (!queryText) {
+                renderArtworksGrid(cachedArtworks);
+                return;
+            }
+
+            const filtered = cachedArtworks.filter(art => {
+                const title = (art.title || "").toLowerCase();
+                const desc = (art.description || "").toLowerCase();
+                return title.includes(queryText) || desc.includes(queryText);
+            });
+
+            renderArtworksGrid(filtered);
+        };
+        
         // Word limit checker and note submission logic
         const noteInput = document.getElementById('visitorNoteInput');
         if (noteInput) {
