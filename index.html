@@ -74,7 +74,28 @@
             66% { transform: translate(-10vw, 10vh) scale(0.88); }
             100% { transform: translate(6vw, -10vh) scale(1.05); }
         }
+                /* VIP Gold Sparkle / Neon Pulse Background Effect */
+        body.vip-active .bg-animation {
+            filter: hue-rotate(90deg) saturate(180%);
+            animation: vipGlowPulse 4s infinite alternate;
+        }
+        @keyframes vipGlowPulse {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; filter: drop-shadow(0 0 30px #00e5ff); }
+        }
 
+        /* VIP Floating Customizer Panel */
+        #vipCustomizerPanel {
+            display: none; position: fixed; bottom: 85px; right: 20px;
+            background: rgba(15, 15, 25, 0.95); backdrop-filter: blur(25px);
+            border: 2px solid var(--accent); border-radius: 16px; padding: 20px;
+            z-index: 1500; width: 280px; box-shadow: 0 10px 40px rgba(0,229,255,0.4);
+            box-sizing: border-box; text-align: left;
+        }
+        #vipCustomizerPanel h4 { margin: 0 0 12px 0; font-family: 'Cinzel', serif; color: var(--accent); font-size: 1.1rem; }
+        .customizer-row { margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px; font-size: 0.85rem; color: var(--text-muted); }
+        .customizer-row input, .customizer-row select { padding: 6px; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); border-radius: 6px; color: #fff; outline: none; font-family: inherit; }
+        
         /* Water Drop Ripple Effect Style */
         .ripple-element {
             position: relative;
@@ -99,6 +120,20 @@
         a { color: var(--text-main); text-decoration: none; transition: color 0.3s ease; }
         a:hover { color: var(--accent); }
 
+                /* Full-Screen Lightbox Modal */
+        #lightboxModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(2, 1, 8, 0.92); z-index: 3000; justify-content: center; align-items: center;
+            backdrop-filter: blur(15px); padding: 20px; box-sizing: border-box; overflow-y: auto;
+        }
+        .lightbox-content {
+            background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--accent);
+            border-radius: 20px; max-width: 650px; width: 100%; padding: 25px; box-sizing: border-box;
+            display: flex; flex-direction: column; gap: 15px; position: relative; max-height: 90vh; overflow-y: auto;
+        }
+        .lightbox-content img { width: 100%; max-height: 500px; object-fit: contain; border-radius: 12px; background: #000; }
+        .lightbox-close { position: absolute; top: 15px; right: 20px; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+        
         /* Utility Bar */
         .utility-bar {
             width: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(12px);
@@ -531,6 +566,57 @@
         </div>
     </div>
 
+        <!-- VIP Subscriber Floating Appearance Customizer Button & Panel -->
+    <div id="vipFloatingTrigger" style="display: none; position: fixed; bottom: 20px; left: 20px; z-index: 1000;">
+        <button class="btn-glass ripple-element" style="background: linear-gradient(45deg, #ffbb00, #ff007f); color: #fff; border: none; font-weight: bold; box-shadow: 0 4px 20px rgba(255,187,0,0.5);" onclick="toggleVipCustomizer()">
+            <i class="fas fa-crown"></i> VIP Appearance Customizer
+        </button>
+    </div>
+
+    <div id="vipCustomizerPanel">
+        <h4><i class="fas fa-sliders-h"></i> VIP Customizer</h4>
+        <div class="customizer-row">
+            <label>Accent Glow Color</label>
+            <input type="color" id="vipCustomGlow" value="#00e5ff" onchange="applyVipCustomization()">
+        </div>
+        <div class="customizer-row">
+            <label>Background Theme Style</label>
+            <select id="vipCustomBgStyle" onchange="applyVipCustomization()">
+                <option value="cyber">Cyberpunk Neon</option>
+                <option value="gold">Royal Gold Flare</option>
+                <option value="deepdark">Ultra Dark Minimal</option>
+            </select>
+        </div>
+        <button class="btn-secondary ripple-element" style="width: 100%; margin-top: 5px; font-size: 0.8rem;" onclick="toggleVipCustomizer()">Close Panel</button>
+    </div>
+
+        <!-- Full-Screen Lightbox Modal -->
+    <div id="lightboxModal" class="modal-overlay">
+        <div class="lightbox-content">
+            <button class="lightbox-close ripple-element" onclick="closeLightbox()">&times;</button>
+            <img id="lightboxImg" src="" alt="Full Screen Artwork">
+            <h3 id="lightboxTitle" style="font-family: 'Cinzel', serif; color: var(--accent); margin: 0;"></h3>
+            <p id="lightboxDesc" style="color: var(--text-muted); font-size: 0.9rem; margin: 0;"></p>
+            
+            <div class="art-actions" style="margin-top: 5px;">
+                <button class="btn-like ripple-element" id="lightboxLikeBtn">
+                    <i class="fas fa-heart"></i> Like (<span id="lightboxLikeCount">0</span>)
+                </button>
+                <button class="btn-glass ripple-element" style="padding: 8px 15px; font-size: 0.85rem;" onclick="shareArtworkLink()">
+                    <i class="fas fa-share-alt"></i> Send / Share
+                </button>
+            </div>
+
+            <div class="comments-section" style="margin-top: 5px;">
+                <div id="lightboxCommentsList" class="comments-list">Loading comments...</div>
+                <div class="comment-input-row">
+                    <input type="text" id="lightboxCommentInput" placeholder="Write a comment...">
+                    <button id="lightboxPostCommentBtn">Post</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <footer>
         <div>&copy; 2026 ART CORE. All rights reserved. Designed for Master Fine Arts.</div>
         <div style="font-size: 0.75rem; color: var(--text-muted);">Secure Cloud Synced & Fully Optimized Across All Devices</div>
@@ -604,6 +690,129 @@
                 alert("Failed to submit note. Please try again.");
             }
         };
+
+                let currentLightboxArtId = null;
+
+        window.openLightbox = function(artId, imgUrl, title, desc) {
+            currentLightboxArtId = artId;
+            document.getElementById('lightboxImg').src = decodeURIComponent(imgUrl);
+            document.getElementById('lightboxTitle').innerText = decodeURIComponent(title);
+            document.getElementById('lightboxDesc').innerText = decodeURIComponent(desc);
+            
+            // Sync like button action
+            const likeBtn = document.getElementById('lightboxLikeBtn');
+            likeBtn.onclick = () => likeArtwork(artId);
+            
+            // Sync comment post action
+            const postBtn = document.getElementById('lightboxPostCommentBtn');
+            postBtn.onclick = () => {
+                // temporarily map input id for comment submission
+                const input = document.getElementById('lightboxCommentInput');
+                // route to main comment logic
+                postCommentLightbox(artId, input);
+            };
+
+            loadLightboxComments(artId);
+            document.getElementById('lightboxModal').style.display = 'flex';
+        };
+
+        window.closeLightbox = function() {
+            document.getElementById('lightboxModal').style.display = 'none';
+            currentLightboxArtId = null;
+        };
+
+        async function loadLightboxComments(artId) {
+            const listContainer = document.getElementById('lightboxCommentsList');
+            try {
+                const querySnapshot = await getDocs(collection(db, `artworks/${artId}/comments`));
+                listContainer.innerHTML = '';
+                if (querySnapshot.empty) {
+                    listContainer.innerHTML = '<div style="font-size: 0.75rem; color: var(--text-muted);">No comments yet. Be the first!</div>';
+                    return;
+                }
+                querySnapshot.forEach((docSnap) => {
+                    const c = docSnap.data();
+                    const item = document.createElement('div');
+                    item.className = 'comment-item';
+                    item.innerHTML = `<strong>${c.author}:</strong> ${c.text}`;
+                    listContainer.appendChild(item);
+                });
+            } catch (err) {
+                console.error("Error loading lightbox comments:", err);
+            }
+        }
+
+        async function postCommentLightbox(artId, inputEl) {
+            if (isReadOnly) return;
+            const commentText = inputEl.value.trim();
+            if (!commentText) return;
+
+            const authorName = currentUser ? currentUser.displayName || currentUser.email : "Guest Visitor";
+            try {
+                await addDoc(collection(db, `artworks/${artId}/comments`), {
+                    author: authorName,
+                    text: commentText,
+                    timestamp: new Date()
+                });
+                inputEl.value = '';
+                loadLightboxComments(artId);
+            } catch (err) {
+                console.error("Error posting comment:", err);
+            }
+        }
+
+        window.shareArtworkLink = function() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.getElementById('lightboxTitle').innerText,
+                    text: 'Check out this masterpiece on Art Core!',
+                    url: window.location.href,
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert("Portfolio link copied to clipboard!");
+            }
+        };
+        
+                // Redirect to WhatsApp with pre-written message for a specific artwork
+        window.orderSimilarSketch = function(artTitle) {
+            if (isReadOnly) return;
+            const decodedTitle = decodeURIComponent(artTitle);
+            const message = encodeURIComponent(`Hi Art Core, I saw your artwork titled "${decodedTitle}" and I would like to get a custom sketch made similar to this.`);
+            window.open(`https://wa.me/919306882926?text=${message}`, '_blank');
+        };
+                // Check VIP Status and activate special background effects & customizer button
+        function checkVipSubscriberStatus() {
+            // Check if user has active VIP status stored in localStorage (or via payment verification)
+            const isVip = localStorage.getItem("artcore_vip_member") === "true";
+            if (isVip) {
+                document.body.classList.add('vip-active');
+                document.getElementById('vipFloatingTrigger').style.display = 'block';
+            }
+        }
+
+        window.toggleVipCustomizer = function() {
+            const panel = document.getElementById('vipCustomizerPanel');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        };
+
+        window.applyVipCustomization = function() {
+            const glowColor = document.getElementById('vipCustomGlow').value;
+            const bgStyle = document.getElementById('vipCustomBgStyle').value;
+
+            document.documentElement.style.setProperty('--accent', glowColor);
+            
+            const bgAnimation = document.querySelector('.bg-animation');
+            if (bgStyle === 'gold') {
+                bgAnimation.style.filter = 'sepia(1) hue-rotate(10deg) saturate(300%)';
+            } else if (bgStyle === 'deepdark') {
+                bgAnimation.style.filter = 'brightness(30%) grayscale(80%)';
+            } else {
+                bgAnimation.style.filter = 'none';
+            }
+        };
+
+        // Call checkVipSubscriberStatus() inside your DOMContentLoaded event listener
         
 
         // Water Drop Ripple Effect Script
@@ -836,6 +1045,15 @@ window.likeArtwork = async function(artId) {
             }
         }
 
+        
+
+                        <div class="comments-section">
+                            <div id="commentsList_${artId}" class="comments-list">Loading comments...</div>
+                            <div class="comment-input-row">
+                                <input type="text" id="commentInput_${artId}" placeholder="Write a comment...">
+                                <button onclick="postComment('${artId}')">Post</button>
+                            </div>
+                        </div>
         function renderArtworksGrid(artworks) {
             const gallery = document.getElementById('publicGallery');
             gallery.innerHTML = '';
@@ -846,7 +1064,7 @@ window.likeArtwork = async function(artId) {
                 const card = document.createElement('div');
                 card.className = 'art-card ripple-element';
                 card.innerHTML = `
-                    <img src="${art.image}" alt="${art.title}">
+                    <img src="${art.image}" alt="${art.title}" style="cursor: pointer;" onclick="openLightbox('${artId}', '${encodeURIComponent(art.image)}', '${encodeURIComponent(art.title)}', '${encodeURIComponent(art.description)}')">
                     <div class="art-info">
                         <h3>${art.title}</h3>
                         <p>${art.description}</p>
@@ -864,6 +1082,22 @@ window.likeArtwork = async function(artId) {
                                 <button onclick="postComment('${artId}')">Post</button>
                             </div>
                         </div>
+
+                        <!-- Make your sketch like this button -->
+                        <button class="btn-done action-trigger ripple-element" style="margin-top: 15px; width: 100%; font-size: 0.85rem; padding: 10px;" onclick="orderSimilarSketch('${encodeURIComponent(art.title)}')">
+                            <i class="fab fa-whatsapp"></i> Make your sketch like this
+                        </button>
+                    </div>
+                `;
+                gallery.appendChild(card);
+                loadComments(artId);
+            });
+                            }
+        
+                        <!-- NEW: Make your sketch like this button -->
+                        <button class="btn-done action-trigger ripple-element" style="margin-top: 15px; width: 100%; font-size: 0.85rem; padding: 10px;" onclick="orderSimilarSketch('${encodeURIComponent(art.title)}')">
+                            <i class="fab fa-whatsapp"></i> Make your sketch like this
+                        </button>
                     </div>
                 `;
                 gallery.appendChild(card);
@@ -888,7 +1122,7 @@ window.likeArtwork = async function(artId) {
                 querySnapshot.forEach((docSnap) => {
                     const data = docSnap.data();
                     setTimeout(() => {
-                        alert(`📢 ART CORE ANNOUNCEMENT:\n\n${data.message}`);
+                        alert(`📢 ART CORE SAYS:\n\n${data.message}`);
                     }, 1200);
                 });
             } catch (e) {
